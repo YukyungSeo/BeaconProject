@@ -1,0 +1,43 @@
+<?xml version="1.0" encoding="utf-8"?>
+<navigation xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    xmlns:tools="http://schemas.android.com/tools"
+    android:id="@+id/mobile_navigation"
+    app:startDestination="@+id/nav_sign_out">
+
+    <fragment
+        android:id="@+id/nav_sign_out"
+        android:name="com.example.acub.ui.sign_out.SignOutFragment"
+        android:label=""
+        android:textColor="#365DAF"
+        tools:layout="@layout/fragment_sign_out" >
+        <action
+            android:id="@+id/action_nav_sign_out_second_to_nav_sign_in"
+            app:destination="@id/nav_sign_out_second" />
+    </fragment>
+
+    <fragment
+        android:id="@+id/nav_sign_out_second"
+        android:name="com.example.help.ui.home.SignOutSecondFragment"
+        android:label="@string/menu_sign_out"
+        tools:layout="@layout/fragment_sign_out_second">
+        <action
+            android:id="@+id/action_SignOutSecondFragment_to_SignOutFragment"
+            app:destination="@id/nav_sign_out" />
+
+        <argument
+            android:name="myArg"
+            app:argType="string" />
+        <action
+            android:id="@+id/action_nav_sign_out_second_to_nav_sign_in"
+            app:destination="@id/nav_sign_in" />
+    </fragment>
+
+    <fragment
+        android:id="@+id/nav_sign_in"
+        android:name="com.example.acub.SignInActivity"
+        android:label="@string/menu_sign_in"
+        tools:layout="@layout/activity_sign_in">
+    </fragment>
+
+</navigation>
