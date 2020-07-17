@@ -32,6 +32,8 @@ public class MainActivity extends AppCompatActivity {
             public void onClick(View v) {
                 id_text= (TextView) findViewById(R.id.idInputText);  //입력받은 id 값
                 //1단계 부분입니다.
+                Intent intent = new Intent(MainActivity.this, BeaconActivity.class) ;
+                startActivity(intent) ;
             }
         });
 
