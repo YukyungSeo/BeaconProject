@@ -3,6 +3,7 @@ package com.example.test;
 import android.os.Bundle;
 import android.view.View;
 import android.widget.Button;
+import android.widget.EditText;
 import android.widget.TextView;
 
 import androidx.appcompat.app.AppCompatActivity;
@@ -28,6 +29,8 @@ public class MainActivity extends AppCompatActivity {
     //*** BLE advertsing and scanner SOURCE
     //*** BLE advertsing and scanner SOURCE
     BleTester bleTester;
+    EditText idedittext;
+    String id;
     //BLE advertsing and scanner SOURCE ***//
     //BLE advertsing and scanner SOURCE ***//
     //**************************************
@@ -45,10 +48,17 @@ public class MainActivity extends AppCompatActivity {
         BLEDataText = (TextView) findViewById(R.id.BLEDataText);
 
 
+
+
+
+
         //**************************************
         //*** BLE advertsing and scanner SOURCE
         //*** BLE advertsing and scanner SOURCE
+
         bleTester=new BleTester(this.getApplicationContext(), this);
+        idedittext= (EditText)findViewById(R.id.idInputText);
+
         //BLE advertsing and scanner SOURCE ***//
         //BLE advertsing and scanner SOURCE ***//
         //**************************************
@@ -77,7 +87,9 @@ public class MainActivity extends AppCompatActivity {
                 //*** BLE advertsing and scanner SOURCE
 
                 //advertising, scanning, setting datas :
-                bleTester.BleTestMainFunc();
+                id=idedittext.getText().toString();
+                System.out.println("hjhjui"+id);
+                bleTester.BleTestFunc(id);
 
                 //get needed datas from bleTester :
 

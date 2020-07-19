@@ -1,102 +1,246 @@
 package com.example.BleSource;
 
-import android.bluetooth.BluetoothAdapter;
 import android.bluetooth.BluetoothManager;
 import android.content.Context;
+import android.util.Log;
 
 import androidx.fragment.app.FragmentActivity;
 
 public class BleTester {
-    /**
 
-     // 2 - get filtered List - 스캔 과정에서 직접 필터링하는게 나음
-                                그 후, phoneID와 거리 값을 산출하여 filteredListByID에
 
-     // 2.5 - get phone info in same area from Server
-
-     // 3 - stack ble datas (need time) -
-
-     // 4 - compute mean value of data
-
-     // 5 - get distance from each phone and make Distance List
-
-     // 6 - compare BLE data and Server data
-
-     // 7 - get  RESULT
-
-     **/
 
     private BleAdvertiser bleAdvr;
     private BleScanner bleScr;
     private BluetoothManager bleMgr;
-    private BluetoothAdapter bleAdtr;
-    private int myPhoneNumber;
+    //private BluetoothAdapter bleAdtr;
+
+    private String myPhoneID;  //내 폰 ID
+
+
+
+    private int myX;    //내가 있는 좌표 x
+    private int myY;    //내가 있는 좌표 y
+
 
     private double comparedDistance=0.6; // ble신호로 산출한 거리와 비교할 거리 범위의 반지름 m
 
-    private phoneInfo[] Phones; //
-    private int phoneSize;
+
+
+    private int PhoneIDSizeFromServer;
+    private int PhoneSizeFromBleScanned;
+    private int PhoneSizeCheckedBOTH;
+
+    private String[] PhoneIDFromServer;
+
+    private phoneInfo[] PhonesFromBleScanned; //ble신호로 받은 같은 어플을 사용하는 폰들
+
+    private String[] getIDFromServer(){
+
+
+
+
+
+
+
+
+
+        return null;
+    }
+    public BleScanner.INFO getScannedINFOByID(String id){
+
+        return null;
+    }
+    private phoneInfo[] scanfilteredPhoneDatas(){
+
+        int sz= myScanner().getAddrsSize();
+        phoneInfo[] temppi=new phoneInfo[sz];
+
+        for(int g=0; g<sz; g++){
+            String tpid =myScanner().ids()[g];
+
+
+
+            double tempDist=this.RSSItoDist(myScanner().getScanned().get(tpid).RSSI(),myScanner().getScanned().get(tpid).TX());
+
+            temppi[g]=new phoneInfo(tpid,false,false,tempDist);
+
+
+
+        }
+
+
+
+
+
+
+
+
+
+        return null;
+    }
 
     private class phoneInfo{
 
-        String phoneID;     //패킷식별문자
-        String phoneIDNumber;  //패킷식별문자에서 기계를 구분하는 숫자만 잘라낸것
+        public phoneInfo(String id, boolean nbBeacon, boolean nebBle, double Dist){
+            this.phoneID=id;
+            this.nearByBeacon=nbBeacon;
+            this.nearByBle=nebBle;
+           // this.rssi= new double[]{-60, -50, -80,-80,-80,-80,-80,-88,-88,-80,-80,-80,-50,-50,-50,-50,-55-50,-50};
+            //this.txP=2.0;
+            this.DistByBle= Dist;
+        }
+
+        String phoneID;
 
         boolean nearByBeacon = false; // 비콘정보로 '나'와 같은 범위내이면 true, 그렇지 않으면 false
         boolean nearByBle = false;  // nearByBeacon이 true인 phone들 중, ble신호와 비교하여 가까이
                                     //있는걸로 최종 확인되면 true, 그렇지 않으면 false
-        double[] rssi;              //scancallback에서 받아서 저장할 값
-        double[] txP;               // 위와같은내용
+        //double[] rssi;              //scancallback에서 받아서 저장할 값
+        //double txP;               // 위와같은내용
 
-        double phoneDist;           //rssi와 txp의 평균값으로 계산한 거리값 하나.
+        double DistByBle=0.0;   // ble 신호로 추정한 거리 값
 
 
 
-    }
-
-    //private Button secondButtonOnMainActivity;
-    public void BleTestMainFunc(){
-
-        // 0 -start BLE advertising
-        myAdvertiser().advertising1(010777);// param : 핸드폰 식별할 정수값(고유번호)직접 입력
-
-        // 1 - start  BLE scanning
-        myScanner().startScan();
-
-        // 2 - get filtered List
-
-        // 2.5 - get phone info in same area from Server
-
-        // 3 - stack ble datas (need time)
-
-        // 4 - compute mean value of data
-
-        // 5 - get distance from each phone and make Distance List
-
-        // 6 - compare BLE data and Server data
-
-        // 7 - get  RESULT
+       private String getID(){
+            return this.phoneID;
+       }
+       private double getDist(){
+            return this.DistByBle;
+       }
+        public void setNearByBLE(boolean b) {
+            this.nearByBle=b;
+        }
+        public boolean getNearByBLE(){
+            return this.nearByBle;
+        }
+        public boolean getNearByBeacon(){
+            return this.nearByBeacon;
+        }
+        public void setNearByBeacon(boolean b) {
+            this.nearByBeacon=b;
+        }
     }
 
     public BleTester(Context thisctx, FragmentActivity fa){
 
         bleAdvr= new BleAdvertiser(thisctx);
-        bleScr= new BleScanner(thisctx, fa);
-        bleMgr=(BluetoothManager)thisctx.getSystemService( Context.BLUETOOTH_SERVICE );
-        bleAdtr=bleMgr.getAdapter();
 
-        //secondButtonOnMainActivity=sb;
-        this.phoneSize=0;
-        Phones = new phoneInfo[30];
+        bleMgr=(BluetoothManager)thisctx.getSystemService( Context.BLUETOOTH_SERVICE );
+        //bleAdtr=bleMgr.getAdapter();
+        bleScr= new BleScanner(bleMgr,thisctx, fa);
+
+        this.PhoneSizeFromBleScanned=0;
+        this.PhoneIDSizeFromServer=0;
+        this.PhoneSizeCheckedBOTH=0;
+    }
+
+
+
+
+    private phoneInfo[] VirtualPhones(){
+        phoneInfo[] pi= new phoneInfo[10];
+        for(int i=0; i<10; i++){
+            pi[i]=new phoneInfo("ph"+(i+1),false,false,0.7 );
+        }
+        return pi;
+    }
+
+
+    private void checkPhonesNearBeacon(String[] idFromServer, phoneInfo[] phonesBLE){
+        if(idFromServer.length==this.PhoneIDSizeFromServer) {
+            for (int i = 0; i < this.PhoneIDSizeFromServer; i++) {
+                boolean findSameID=false;
+                for(int j=0; j<this.PhoneSizeFromBleScanned; j++){
+                    if(idFromServer[i].equals(phonesBLE[j].getID())){   //중복아이디 고려 안함
+                        findSameID=true;
+                        phonesBLE[j].setNearByBeacon(true);
+                        j=this.PhoneSizeFromBleScanned;
+                    }
+                }
+                if(findSameID==true) {
+                    this.PhoneSizeCheckedBOTH++;
+                }else{
+                    System.out.println("hjhj error: can't find SAME PHONE ID from ble scanned LIST");
+                }
+            }
+        }else{
+           System.out.println("hjhj error , size not correct");
+        }
+    }
+
+    //private Button secondButtonOnMainActivity;
+    public void BleTestFunc(String myID){
+
+        //set compared Distance:
+        setCompdDist(0.7);
+        //set my id from UI textView
+        setMyID("ID"+myID);
+
+        // 0 -start BLE advertising
+        myAdvertiser().advertising1(getMyID());//
+
+        // 1 - start  BLE scanning
+        myScanner().startScan();
+
+
 
 
     }
+    public void BleTestFunc2(){
+        // 2 - get filtered List and stack ble data
+        //PhonesFromBleScanned=VirtualPhones();   //test data
+        PhonesFromBleScanned=scanfilteredPhoneDatas();
+        PhoneSizeFromBleScanned=PhonesFromBleScanned.length;
 
+
+        // 2.5 - get phone info in same area from Server
+        PhoneIDFromServer= new String[]{"ph5","ph2","ph7","ph4","ph3"}; //test data
+        //PhoneIDFromServer= getIDFromServer();
+        PhoneIDSizeFromServer=PhoneIDFromServer.length;
+
+
+        // ble 스캔 리스트의 모든 기기의 거리를 비교범위와 비교함
+        for(int v=0; v<this.PhoneSizeFromBleScanned; v++) {
+            if (ifNear(PhonesFromBleScanned[v].getDist())) {
+                PhonesFromBleScanned[v].setNearByBLE(true);
+
+            } else {
+                Log.d("hjhj","ble추정값이 일정거리를 벗어난 기기임당 ");
+            }
+
+        }
+
+
+        //ble로 스캔된 기기들중 아이디를 확인하여 서버에서 받은 기기들과 같은 기기들을 걸러냄.
+        // 6 - compare BLE data and Server data and set nearByBeacon:
+        this.checkPhonesNearBeacon(PhoneIDFromServer,PhonesFromBleScanned);
+
+
+        // 7 - get  RESULT
+        // nearbybeacon==true&&nearbyble==true 인 기기가 비콘측량과 ble측량에서 유사정확도안에 포함되는 기기임 ***
+        // nearbybeacon==false&&nearbyble==true 서버에서 같은 영역안의 기기라고 정해지진 않았지만, ble거리 측정에서 유사범위안에 포함되는 기기임
+        //nearbybeacon==true&&nearbyble==false 서버에서 같은 영역안 기기라고 결정했지만, ble 측정결과 아니라고 결정한 기기 ***
+        //nearbybeacon==falsee&&nearbyble==false
+
+    }
+
+
+
+    /**
     private BluetoothAdapter myAdapter(){
         return this.bleAdtr;
     }
     private BluetoothManager myManager(){
         return this.bleMgr;
+    }
+     ***/
+    public void setMyID(String id){
+        this.myPhoneID=id;
+    }
+    public String getMyID(){
+        return this.myPhoneID;
     }
     private BleAdvertiser myAdvertiser(){
         return this.bleAdvr;
@@ -119,10 +263,29 @@ public class BleTester {
             return false;
         }
     }
-    private Double RSSItoDist(double rssi, double txP){
+    private Double RSSItoDist(int[] rssi, int[] txP){
+       // D = 10 ^ ( (TXpower-RSSI) / (10*n) )
+        double DIST= 0.0;
+        int n=rssi.length;
+        if(rssi.length==txP.length){
 
 
-        return 0.5;
+            for(int p=0; p<n; p++){
+                DIST+=10^((txP[p]-rssi[p]/(10*2)));
+
+            }
+            DIST=DIST/n;
+            DIST=((int)(DIST*100))/100;
+
+
+
+        }else{
+            DIST= 9.9;
+        }
+
+
+
+        return DIST;
     }
 
 

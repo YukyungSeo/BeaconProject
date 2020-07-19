@@ -1,7 +1,6 @@
 package com.example.BleSource;
 
 import android.bluetooth.BluetoothAdapter;
-import android.bluetooth.BluetoothDevice;
 import android.bluetooth.le.AdvertiseCallback;
 import android.bluetooth.le.AdvertiseData;
 import android.bluetooth.le.AdvertiseSettings;
@@ -14,26 +13,40 @@ import android.net.ConnectivityManager;
 import android.os.ParcelUuid;
 import android.util.Log;
 
-import java.util.UUID;
+import java.nio.charset.Charset;
 
 
 public class BleAdvertiser {
+    public String LOG_TAG="hjhjad";
+    ConnectivityManager mng;
+    Context thisContext;
 
 
 
-    public String LOG_TAG="hjhj";
+    public static String UUID_tempt ="CDB7950D-73F1-4D4D-8E47-C090502DBD63";
+    BluetoothAdapter adapter;
+    BluetoothLeAdvertiser advertiser;
+
+
+    AdvertiseData.Builder dataBuilder;
+    AdvertiseData data;
+
+    AdvertisingSetParameters.Builder bld;
+    AdvertisingSetParameters parameters;
 
     AdvertisingSet currentAdvertisingSet;
-    ConnectivityManager mng;
 
-    Context thisContext;
+    AdvertiseSettings st;
+
+
+    /////////////////////////////////
+
 
 
     public BleAdvertiser(Context tt){
         callManager(tt);
         this.thisContext=tt;
     }
-    //public BleAdvertiser(){};
     void callManager(Context con){
         mng=(ConnectivityManager)con.getSystemService(con.CONNECTIVITY_SERVICE);
 
@@ -41,81 +54,149 @@ public class BleAdvertiser {
     }
 
 
-    void advertising1(int PhoneNumber) {   //user this function
 
-        BluetoothAdapter adapter = BluetoothAdapter.getDefaultAdapter();
-        BluetoothLeAdvertiser advertiser =
-                adapter.getBluetoothLeAdvertiser();
-        Log.d(LOG_TAG,"hjhj" +adapter.getAddress());
+    private void setAdapter(){
 
-        AdvertisingSetParameters.Builder bld= new AdvertisingSetParameters.Builder();
+        adapter = BluetoothAdapter.getDefaultAdapter();
+        advertiser = adapter.getBluetoothLeAdvertiser();
+        Log.d(LOG_TAG,"hjhjad myaddr" +adapter.getAddress());
+
+    }
+    private void setAdvParameter(){
+        bld= new AdvertisingSetParameters.Builder();
         bld.setLegacyMode(true); // True by default, but set here as a reminder.
         bld.setScannable(true);
         bld.setConnectable(true);
         bld.setInterval(AdvertisingSetParameters.INTERVAL_HIGH);
         bld.setTxPowerLevel(AdvertisingSetParameters.TX_POWER_MEDIUM);
 
-        AdvertisingSetParameters parameters = bld
-                .build();
+        parameters = bld.build();
 
-        AdvertiseData data = (new AdvertiseData.Builder()).setIncludeDeviceName(true).build();
+    }
+    byte[] md;
+    private void setData(String id){
+        //
+        dataBuilder= new AdvertiseData.Builder();
+        //dataBuilder.setIncludeDeviceName(true);
+        //dataBuilder.setIncludeTxPowerLevel(true); //tx파워값을 패킷에 넣어 보냄~
 
-        AdvertisingSetCallback callback = new AdvertisingSetCallback() {
-            @Override
-            public void onAdvertisingSetStarted(AdvertisingSet advertisingSet, int txPower, int status) {
-                Log.i(LOG_TAG, "onAdvertisingSetStarted(): txPower:" + txPower + " , status: "
-                        + status);
-                currentAdvertisingSet = advertisingSet;
-            }
 
-            @Override
-            public void onAdvertisingDataSet(AdvertisingSet advertisingSet, int status) {
-                Log.i(LOG_TAG, "onAdvertisingDataSet() :status:" + status);
-            }
+        int datalength=1;
+        md=new byte[datalength];
+        byte[] idtobyte=id.getBytes(Charset.forName("UTF-8"));
+        System.out.println("hjhjad id  "+id);
+        System.out.println("hjhjad idto byte length  "+idtobyte.length);
 
-            @Override
-            public void onScanResponseDataSet(AdvertisingSet advertisingSet, int status) {
-                Log.i(LOG_TAG, "onScanResponseDataSet(): status:" + status);
-            }
+        for(int i=0; i<datalength; i++){
+           if(i<5) {
+               md[i] = (byte) 0x29;   //filtered
+           }else{
+               md[i]=(byte)0x00;
+           }
 
-            @Override
-            public void onAdvertisingSetStopped(AdvertisingSet advertisingSet) {
-                Log.i(LOG_TAG, "onAdvertisingSetStopped():");
-            }
-        };
-        AdvertiseCallback advertisingCallback = new AdvertiseCallback() {
-            @Override
-            public void onStartSuccess(AdvertiseSettings settingsInEffect) {
-                super.onStartSuccess(settingsInEffect);
-                Log.i("BLE", "LE Advertise success.");
+        }
+        /*
+        int idlen=idtobyte.length;
+        if(idtobyte.length>datalength){
+            idlen=datalength;
+        }
 
-            }
+        for(int j=5; j<5+idlen; j++){
+            md[j]=idtobyte[j-5];         //id
+        }
+        */
 
-            @Override
-            public void onStartFailure(int errorCode) {
-                Log.e("BLE", "Advertising onStartFailure: " + errorCode);
-                super.onStartFailure(errorCode);
-            }
-        };
+       Log.d("hjhjad adv data len",""+md.length);
+        System.out.println("hjhjad adv data len       "+md.length);
+        //set data tester
 
+        String uid = "hajoo";
+
+        //설정한 uuid와 edittext 값을 바탕으로 광고 데이터 생성
+        //mAdvData = new AdvertiseData.Builder();
+        //dataBuilder.addServiceUuid(ParcelUuid.fromString(UUID_tempt));
+       // mAdvData.addServiceData(pUuid, uid.getBytes(Charset.forName("UTF-8")));
+
+
+        //dataBuilder.addServiceData(ParcelUuid.fromString(UUID_tempt), new byte[]{0x00,0x00});
+        dataBuilder.addServiceData(ParcelUuid.fromString(UUID_tempt), id.getBytes(Charset.forName("UTF-8")));
+        //dataBuilder.addManufacturerData(1,md);  //MANUFACTURER DATA SIZE : 25 BYTES.
+       // adapter.getMa
+       // dataBuilder.addServiceData();
+       // dataBuilder.addServiceUuid();
+
+        //
+
+        data = dataBuilder.build();
+
+    }
+    private void settingAdvertising(){
         advertiser.startAdvertisingSet(parameters, data, null, null, null, callback);
-        AdvertiseSettings st = new AdvertiseSettings.Builder()
+
+        st = new AdvertiseSettings.Builder()
                 .setAdvertiseMode( AdvertiseSettings.ADVERTISE_MODE_LOW_LATENCY )
                 .setTxPowerLevel( AdvertiseSettings.ADVERTISE_TX_POWER_HIGH )
                 .setConnectable(false)
                 .build();
+
+
+    }
+    private void startAdv(){
+
         advertiser.startAdvertising(st,data,advertisingCallback);
-
-        // After onAdvertisingSetStarted callback is called, you can modify the
-        // advertising data and scan response data:
-        // currentAdvertisingSet.setAdvertisingData(new AdvertiseData.Builder(). setIncludeDeviceName(true).setIncludeTxPowerLevel(true).build());
-        // Wait for onAdvertisingDataSet callback...
-        // currentAdvertisingSet.setScanResponseData(new
-        //        AdvertiseData.Builder().addServiceUuid(new ParcelUuid(UUID.randomUUID())).build());
-        // Wait for onScanResponseDataSet callback...
-
-        // When done with the advertising:
+    }
+    private void stopAdvSet(){
         advertiser.stopAdvertisingSet(callback);
+
+    }
+    AdvertiseCallback advertisingCallback = new AdvertiseCallback() {
+        @Override
+        public void onStartSuccess(AdvertiseSettings settingsInEffect) {
+            super.onStartSuccess(settingsInEffect);
+            Log.i(LOG_TAG, "LE Advertise success.");
+
+        }
+
+        @Override
+        public void onStartFailure(int errorCode) {
+            Log.e(LOG_TAG, "Advertising onStartFailure: " + errorCode);
+            super.onStartFailure(errorCode);
+        }
+    };
+    AdvertisingSetCallback callback = new AdvertisingSetCallback() {
+        @Override
+        public void onAdvertisingSetStarted(AdvertisingSet advertisingSet, int txPower, int status) {
+            Log.i(LOG_TAG, "hjhjad onAdvertisingSetStarted(): txPower:" + txPower + " , status: "
+                    + status);
+            currentAdvertisingSet = advertisingSet;
+        }
+
+        @Override
+        public void onAdvertisingDataSet(AdvertisingSet advertisingSet, int status) {
+            Log.i(LOG_TAG, "hjhjad onAdvertisingDataSet() :status:" + status);
+        }
+
+        @Override
+        public void onScanResponseDataSet(AdvertisingSet advertisingSet, int status) {
+            Log.i(LOG_TAG, "hjhjad onScanResponseDataSet(): status:" + status);
+        }
+
+        @Override
+        public void onAdvertisingSetStopped(AdvertisingSet advertisingSet) {
+            Log.i(LOG_TAG, "hjhjad onAdvertisingSetStopped():");
+        }
+    };
+
+    public void advertising1(String myphoneID) {   //user this function
+        this.setAdapter();
+        this.setAdvParameter();
+        this. setData(myphoneID);
+        this.settingAdvertising();
+
+        this.startAdv();
+        this.stopAdvSet();
+
+
     }
 
 
@@ -138,7 +219,7 @@ public class BleAdvertiser {
 
 
 
-
+    /***
     void advertising2(){
         BluetoothAdapter adapter = BluetoothAdapter.getDefaultAdapter();
         BluetoothLeAdvertiser advertiser =
@@ -210,4 +291,6 @@ public class BleAdvertiser {
 
 
     }
+     ***/
+
 }
