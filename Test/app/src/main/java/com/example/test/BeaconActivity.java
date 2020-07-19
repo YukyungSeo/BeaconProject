@@ -80,7 +80,8 @@ public class BeaconActivity extends AppCompatActivity {
 
                 // regionXY를 서버로 전송하면 됨
                 int[] regionXY = getRegion();
-                Log.d("AttendanceCheck final region", regionXY[0] + ", " +regionXY[1]);
+                if(regionXY != null)
+                    Log.d("AttendanceCheck final region", regionXY[0] + ", " +regionXY[1]);
 
                 finish(); // 이 액티비티를 종료
             }
