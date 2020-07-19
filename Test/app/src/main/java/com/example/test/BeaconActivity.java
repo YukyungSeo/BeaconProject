@@ -12,19 +12,24 @@ import com.estimote.coresdk.observation.region.beacon.BeaconRegion;
 import com.estimote.coresdk.recognition.packets.Beacon;
 import com.estimote.coresdk.service.BeaconManager;
 
+import java.util.ArrayList;
 import java.util.Arrays;
+import java.util.Collections;
 import java.util.List;
 import java.util.UUID;
 
 public class BeaconActivity extends AppCompatActivity {
-    public static final String FR = "eb6e331d9821";
+
+    public Point2D[] BeaconPoint = new Point2D[BEACON_NUM];
+
+    public static final String FL = "eb6e331d9821";
     public static final String FM = "f0bbb41f285a";
-    public static final String FL = "FC";
-    public static final String MR = "FD";
-    public static final String ML = "FE";
-    public static final String BR = "FF";
-    public static final String BL = "FG";
-    public static final String BM = "FH";
+    public static final String FR = "e2d7d0cf903e";
+    public static final String ML = "FD";
+    public static final String MR = "FE";
+    public static final String BL = "FF";
+    public static final String BM = "FG";
+    public static final String BR = "FH";
     public static final int SIGNAL_LIMIT = 50;
     public static final int BEACON_NUM = 8;
 
@@ -34,23 +39,36 @@ public class BeaconActivity extends AppCompatActivity {
     Beacon[] ConnectedBeacon;
     double[][] BeaconsPackets = new double[BEACON_NUM][SIGNAL_LIMIT];
 
-    double[] selectedValues = new double[BEACON_NUM];
+    ArrayList<Double> selectedValues = new ArrayList<>();
 
-    int FRSize = 0;
-    int FMSize = 0;
     int FLSize = 0;
-    int MRSize = 0;
+    int FMSize = 0;
+    int FRSize = 0;
     int MLSize = 0;
-    int BRSize = 0;
-    int BMSize = 0;
+    int MRSize = 0;
     int BLSize = 0;
+    int BMSize = 0;
+    int BRSize = 0;
 
     double n = 2;
+
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
 //        setContentView(R.layout.activity_main);
+
+        for(int i=0; i<BEACON_NUM; i++)
+            Arrays.fill(BeaconsPackets[i], 100.0);
+
+        BeaconPoint[0] = new Point2D(0, 0, 0);
+        BeaconPoint[1] = new Point2D(4.5, 0, 0);
+        BeaconPoint[2] = new Point2D(9, 0, 0);
+        BeaconPoint[3] = new Point2D(0, 4.5, 0);
+        BeaconPoint[4] = new Point2D(9, 4.5, 0);
+        BeaconPoint[5] = new Point2D(0, 4.5, 0);
+        BeaconPoint[6] = new Point2D(4.5, 9, 0);
+        BeaconPoint[7] = new Point2D(9, 9, 0);
 
         //time limit 설정
         Handler timer = new Handler(); //Handler 생성
@@ -59,9 +77,15 @@ public class BeaconActivity extends AppCompatActivity {
                 beaconManager.disconnect();
                 Log.d("AttendanceCheck", "stopbeacon");
                 getMedian();
+
+                // regionXY를 서버로 전송하면 됨
+                int[] regionXY = getRegion();
+                if(regionXY != null)
+                    Log.d("AttendanceCheck final region", regionXY[0] + ", " +regionXY[1]);
+
                 finish(); // 이 액티비티를 종료
             }
-        }, 60000); //60000 == 1분
+        }, 20000); //60000 == 1분
 
         //수신 구역 설정
         region = new BeaconRegion("ranged region",
@@ -94,10 +118,10 @@ public class BeaconActivity extends AppCompatActivity {
         double distant = Math.pow(10, ((TXpower-rssi)/(n*10)));
 
         switch (beacon.getMacAddress().toHexString()) {
-            case FR:
-                if (FRSize < SIGNAL_LIMIT){
-                    BeaconsPackets[0][FRSize] = distant;
-                    FRSize++;
+            case FL:
+                if (FLSize < SIGNAL_LIMIT){
+                    BeaconsPackets[0][FLSize] = distant;
+                    FLSize++;
                 }
                 break;
             case FM:
@@ -106,16 +130,10 @@ public class BeaconActivity extends AppCompatActivity {
                     FMSize++;
                 }
                 break;
-            case FL:
-                if (FLSize < SIGNAL_LIMIT) {
-                    BeaconsPackets[2][FLSize] = distant;
-                    FLSize++;
-                }
-                break;
-            case MR:
-                if (MRSize < SIGNAL_LIMIT) {
-                    BeaconsPackets[3][MRSize] = distant;
-                    MRSize++;
+            case FR:
+                if (FRSize < SIGNAL_LIMIT) {
+                    BeaconsPackets[2][FRSize] = distant;
+                    FRSize++;
                 }
                 break;
             case ML:
@@ -124,10 +142,16 @@ public class BeaconActivity extends AppCompatActivity {
                     MLSize++;
                 }
                 break;
-            case BR:
-                if (BRSize < SIGNAL_LIMIT) {
-                    BeaconsPackets[5][BRSize] = distant;
-                    BRSize++;
+            case MR:
+                if (MRSize < SIGNAL_LIMIT) {
+                    BeaconsPackets[3][MRSize] = distant;
+                    MRSize++;
+                }
+                break;
+            case BL:
+                if (BLSize < SIGNAL_LIMIT) {
+                    BeaconsPackets[7][BLSize] = distant;
+                    BLSize++;
                 }
                 break;
             case BM:
@@ -136,10 +160,10 @@ public class BeaconActivity extends AppCompatActivity {
                     BMSize++;
                 }
                 break;
-            case BL:
-                if (BLSize < SIGNAL_LIMIT) {
-                    BeaconsPackets[7][BLSize] = distant;
-                    BLSize++;
+            case BR:
+                if (BRSize < SIGNAL_LIMIT) {
+                    BeaconsPackets[5][BRSize] = distant;
+                    BRSize++;
                 }
                 break;
             default:
@@ -159,10 +183,37 @@ public class BeaconActivity extends AppCompatActivity {
 
         //중앙값?
         for(int i=0; i<BEACON_NUM; i++){
-            selectedValues[i] = BeaconsPackets[i][SIGNAL_LIMIT -(FRSize/2)];
+//            selectedValues[i] = BeaconsPackets[i][FRSize / 2];
+            selectedValues.add(BeaconsPackets[i][FRSize / 2]);
         }
         //평균값? X
         //최빈값?
+    }
+
+    public int[] getRegion(){
+        // 복사해서 sort한다.
+        ArrayList<Double> sortArr = (ArrayList<Double>) selectedValues.clone();
+        sortArr.sort(null);
+
+        int shortest1 = selectedValues.indexOf(sortArr.get(0));
+        int shortest2 = selectedValues.indexOf(sortArr.get(1));
+        int shortest3 = selectedValues.indexOf(sortArr.get(2));
+
+        Point2D triPoint = Trilateration.getTrilateration(BeaconPoint[shortest1], BeaconPoint[shortest2], BeaconPoint[shortest3]);
+
+        int[] region = new int[2];
+
+        if(triPoint.getX() < 3)         region[0] = 0;
+        else if (triPoint.getX() < 6)   region[0] = 1;
+        else if (triPoint.getX() <= 9)  region[0] = 2;
+        else return null;
+
+        if(triPoint.getY() < 3)         region[1] = 0;
+        else if (triPoint.getY() < 6)   region[1] = 1;
+        else if (triPoint.getY() <= 9)  region[1] = 2;
+        else return null;
+
+        return region;
     }
 
     @Override
