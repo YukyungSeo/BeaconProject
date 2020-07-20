@@ -1,5 +1,6 @@
 package com.example.test;
 
+import android.content.Intent;
 import android.os.Bundle;
 import android.os.Handler;
 import android.util.Log;
@@ -82,6 +83,11 @@ public class BeaconActivity extends AppCompatActivity {
                 int[] regionXY = getRegion();
                 if(regionXY != null)
                     Log.d("AttendanceCheck final region", regionXY[0] + ", " +regionXY[1]);
+
+                // MainActivity에 전송
+                Intent data = new Intent();
+                data.putExtra("regionXY", regionXY);
+                setResult(0, data);
 
                 finish(); // 이 액티비티를 종료
             }

@@ -63,16 +63,7 @@ public class MainActivity extends AppCompatActivity {
                 id_text= (TextView) findViewById(R.id.idInputText);  //입력받은 id 값
                 //1단계 부분입니다.
                 Intent intent = new Intent(MainActivity.this, BeaconActivity.class) ;
-                startActivity(intent) ;
-                PHPConnect connect = new PHPConnect();
-                /* 아래부분 삽입해주세요!*/
-
-                String x = "";   // x값 삽입 해주세요.
-                String y = "";   // y값 삽입 해주세요.
-
-                /* 삽입후 주석은 삭제해주세요 */
-                String URL = "http://168.188.129.191/test_save_location.php?id="+id_text.getText().toString()+"&x="+x+"&y="+y;
-                connect.execute(URL);
+                startActivityForResult(intent, 0); ;
             }
         });
 
@@ -141,6 +132,31 @@ public class MainActivity extends AppCompatActivity {
         });
 
 
+    }
+
+    @Override
+    protected void onActivityResult(int requestCode, int resultCode, Intent data) {
+        super.onActivityResult(requestCode, resultCode, data);
+        switch(requestCode){
+            case 0: {
+                PHPConnect connect = new PHPConnect();
+                int[] regionXY = (int[]) data.getSerializableExtra("regionXY");
+
+                String x = "";
+                String y = "";
+                if(regionXY != null) {
+                    x += regionXY[0];   // x값 삽입 해주세요.
+                    y += regionXY[1];   // y값 삽입 해주세요.
+                }
+                String URL = "http://168.188.129.191/test_save_location.php?id=" + id_text.getText().toString() + "&x=" + x + "&y=" + y;
+                connect.execute(URL);
+                break;
+            }
+            case 1:
+                break;
+            default:
+                break;
+        }
     }
 
     public void toast_cant_find_location(){
