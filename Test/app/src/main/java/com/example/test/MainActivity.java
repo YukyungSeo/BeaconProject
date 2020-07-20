@@ -132,6 +132,12 @@ public class MainActivity extends AppCompatActivity {
                 //BLE advertsing and scanner SOURCE ***//
                 //**************************************
 
+                String DataText = "";
+                for(int i = 0; i<results.length;i++){
+                    DataText += (i+1)+"번째 결과 값"+results[i]+"\n";
+                }
+
+                BLEDataText.setText(DataText);
 
             }
         });
