@@ -6,10 +6,16 @@ import android.content.Intent;
 import android.os.Bundle;
 import android.view.View;
 import android.widget.Button;
+import android.widget.EditText;
 import android.widget.TextView;
+import android.widget.Toast;
 
 import java.util.concurrent.ExecutionException;
-
+//*** import for BLE
+//*** import for BLE
+import com.example.BleSource.BleTester;
+//import for BLE ***//
+//import for BLE ***//
 public class MainActivity extends AppCompatActivity {
     TextView id_text;
     Button firstButton;
@@ -17,6 +23,16 @@ public class MainActivity extends AppCompatActivity {
     TextView BLEDataText;
     //추가로 변수가 필요할 경우 단톡방에 꼭 말해주세요.
     //push 할때도 꼭 단톡방에 말해주세요.
+
+    //**************************************
+    //*** BLE advertsing and scanner SOURCE
+    //*** BLE advertsing and scanner SOURCE
+    BleTester bleTester;
+    EditText idedittext;
+    String id;
+    //BLE advertsing and scanner SOURCE ***//
+    //BLE advertsing and scanner SOURCE ***//
+    //**************************************
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -27,6 +43,20 @@ public class MainActivity extends AppCompatActivity {
         secondButton = (Button)findViewById(R.id.secondButton);
         BLEDataText = (TextView) findViewById(R.id.BLEDataText);
 
+
+
+        //**************************************
+        //*** BLE advertsing and scanner SOURCE
+        //*** BLE advertsing and scanner SOURCE
+
+        bleTester=new BleTester(this.getApplicationContext(), this);
+        idedittext= (EditText)findViewById(R.id.idInputText);
+
+        //BLE advertsing and scanner SOURCE ***//
+        //BLE advertsing and scanner SOURCE ***//
+        //**************************************
+
+
         firstButton.setOnClickListener(new View.OnClickListener(){
             @Override
             public void onClick(View v) {
@@ -34,6 +64,15 @@ public class MainActivity extends AppCompatActivity {
                 //1단계 부분입니다.
                 Intent intent = new Intent(MainActivity.this, BeaconActivity.class) ;
                 startActivity(intent) ;
+                PHPConnect connect = new PHPConnect();
+                /* 아래부분 삽입해주세요!*/
+
+                String x = "";   // x값 삽입 해주세요.
+                String y = "";   // y값 삽입 해주세요.
+
+                /* 삽입후 주석은 삭제해주세요 */
+                String URL = "http://168.188.129.191/test_save_location.php?id="+id_text.getText().toString()+"&x="+x+"&y="+y;
+                connect.execute(URL);
             }
         });
 
@@ -43,9 +82,68 @@ public class MainActivity extends AppCompatActivity {
                 id_text= (TextView) findViewById(R.id.idInputText);  //입력받은 id 값
                 //2단계 부분입니다.
                 //BLEDataText에 같은 영역의 BLE를 출력하면 됩니다.
+
+                //**************************************
+                //*** BLE advertsing and scanner SOURCE
+                //*** BLE advertsing and scanner SOURCE
+
+                //advertising, scanning, setting datas :
+                id=idedittext.getText().toString();
+
+                //server에서  자기 포함 값 가져오기
+
+                PHPConnect connect = new PHPConnect();
+                String URL = "http://168.188.129.191/test_find_location.php?id="+id_text.getText().toString();
+                String result = null;
+                String[] otherPhones;
+                try {
+                    result = connect.execute(URL).get();
+                } catch (ExecutionException e) {
+                    e.printStackTrace();
+                } catch (InterruptedException e) {
+                    e.printStackTrace();
+                }
+                if(result == null){ // web error로 오류가 생겼을 경우
+                    toast_cant_find_location();
+                }else{  // 정상의 경우
+                    String x = result.split("")[0];
+                    String y = result.split("")[1];
+                    URL = "http://168.188.129.191/test_find_others.php?x="+x+"&y="+y;
+                    String others = null;
+                    try {
+                        others = connect.execute(URL).get();
+                    } catch (ExecutionException e) {
+                        e.printStackTrace();
+                    } catch (InterruptedException e) {
+                        e.printStackTrace();
+                    }
+
+                    if(others==null){
+                        toast_cant_find_location();
+                    }else{
+                        otherPhones = new String[others.length()];
+                        for(int i=0; i<others.length();i++){
+                            otherPhones[i] = String.valueOf(others.charAt(i));
+                        }
+                    }
+                }
+
+                bleTester.BleTestFunc(id);
+
+                //get needed datas from bleTester :
+
+                //BLE advertsing and scanner SOURCE ***//
+                //BLE advertsing and scanner SOURCE ***//
+                //**************************************
+
+
             }
         });
 
 
+    }
+
+    public void toast_cant_find_location(){
+        Toast.makeText(this,"error", Toast.LENGTH_SHORT).show();
     }
 }
