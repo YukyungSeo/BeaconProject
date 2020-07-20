@@ -30,6 +30,7 @@ public class MainActivity extends AppCompatActivity {
     BleTester bleTester;
     EditText idedittext;
     String id;
+    String[] results;
     //BLE advertsing and scanner SOURCE ***//
     //BLE advertsing and scanner SOURCE ***//
     //**************************************
@@ -51,6 +52,8 @@ public class MainActivity extends AppCompatActivity {
 
         bleTester=new BleTester(this.getApplicationContext(), this);
         idedittext= (EditText)findViewById(R.id.idInputText);
+
+        //String[] otherPhones;
 
         //BLE advertsing and scanner SOURCE ***//
         //BLE advertsing and scanner SOURCE ***//
@@ -82,7 +85,6 @@ public class MainActivity extends AppCompatActivity {
                 id=idedittext.getText().toString();
 
                 //server에서  자기 포함 값 가져오기
-
                 PHPConnect connect = new PHPConnect();
                 String URL = "http://168.188.129.191/test_find_location.php?id="+id_text.getText().toString();
                 String result = null;
@@ -116,10 +118,13 @@ public class MainActivity extends AppCompatActivity {
                         for(int i=0; i<others.length();i++){
                             otherPhones[i] = String.valueOf(others.charAt(i));
                         }
+                        bleTester.setIDFromServer(otherPhones);
                     }
                 }
 
+                //bleTester.setIDFromServer(otherPhones);
                 bleTester.BleTestFunc(id);
+                results=bleTester.getResult();
 
                 //get needed datas from bleTester :
 

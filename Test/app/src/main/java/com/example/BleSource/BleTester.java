@@ -7,6 +7,11 @@ import android.util.Log;
 
 import androidx.fragment.app.FragmentActivity;
 
+
+import com.example.test.PHPConnect;
+
+import java.util.concurrent.ExecutionException;
+
 public class BleTester {
     public void BleTestFunc2(){
         // 2 - get filtered List and stack ble data
@@ -16,9 +21,9 @@ public class BleTester {
 
 
         // 2.5 - get phone info in same area from Server
-        PhoneIDFromServer= new String[]{"ph5","ph2","ph7","ph4","ph3"}; //test data
+        //PhoneIDFromServer= new String[]{"ph5","ph2","ph7","ph4","ph3"}; //test data
         //PhoneIDFromServer= getIDFromServer();
-        PhoneIDSizeFromServer=PhoneIDFromServer.length;
+        //PhoneIDSizeFromServer=PhoneIDFromServer.length;
 
 
         // ble 스캔 리스트의 모든 기기의 거리를 비교범위와 비교함
@@ -47,16 +52,29 @@ public class BleTester {
         //nearbybeacon==falsee&&nearbyble==false
 
     }
-    private String[] getIDFromServer(){
+    public void setIDFromServer(String[] fromServer){
         // 서버에서 받아온 같은 영역에 있는 phone들의 ID string 목록임
+        if(fromServer==null) {
+            System.out.println("hjhj from server null");
+        }else {
+            this.PhoneIDFromServer = new String[fromServer.length];
+            this.PhoneIDFromServer = fromServer;
+            PhoneIDSizeFromServer = PhoneIDFromServer.length;
+        }
+    }
+    public String[] getResult(){
+        String[] temp= new String[PhoneSizeFromBleScanned];
+        int n=PhoneSizeFromBleScanned;
+
+        for(int i=0; i<n; i++) {
+            if (temp[i] != null) {
+                temp[i] = "[ID:" + PhonesFromBleScanned[i].phoneID + " nearBeacon:" + PhonesFromBleScanned[i].getNearByBeacon() + " nearBLE:" + PhonesFromBleScanned[i].getNearByBLE() + " DistByBLE:" + PhonesFromBleScanned[i].getDist()+"]";
+            }
+        }
 
 
 
-
-
-
-
-        return null;
+        return temp;
     }
     public void BleTestFunc(String myID) {
 
