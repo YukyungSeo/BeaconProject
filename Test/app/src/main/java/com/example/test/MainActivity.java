@@ -8,6 +8,7 @@ import android.view.View;
 import android.widget.Button;
 import android.widget.EditText;
 import android.widget.TextView;
+import android.widget.Toast;
 
 import java.util.concurrent.ExecutionException;
 //*** import for BLE
@@ -63,6 +64,15 @@ public class MainActivity extends AppCompatActivity {
                 //1단계 부분입니다.
                 Intent intent = new Intent(MainActivity.this, BeaconActivity.class) ;
                 startActivity(intent) ;
+                PHPConnect connect = new PHPConnect();
+                /* 아래부분 삽입해주세요!*/
+
+                String x = "";   // x값 삽입 해주세요.
+                String y = "";   // y값 삽입 해주세요.
+
+                /* 삽입후 주석은 삭제해주세요 */
+                String URL = "http://168.188.129.191/test_save_location.php?id="+id_text.getText().toString()+"&x="+x+"&y="+y;
+                connect.execute(URL);
             }
         });
 
@@ -79,6 +89,45 @@ public class MainActivity extends AppCompatActivity {
 
                 //advertising, scanning, setting datas :
                 id=idedittext.getText().toString();
+
+                //server에서  자기 포함 값 가져오기
+
+                PHPConnect connect = new PHPConnect();
+                String URL = "http://168.188.129.191/test_find_location.php?id="+id_text.getText().toString();
+                String result = null;
+                String[] otherPhones;
+                try {
+                    result = connect.execute(URL).get();
+                } catch (ExecutionException e) {
+                    e.printStackTrace();
+                } catch (InterruptedException e) {
+                    e.printStackTrace();
+                }
+                if(result == null){ // web error로 오류가 생겼을 경우
+                    toast_cant_find_location();
+                }else{  // 정상의 경우
+                    String x = result.split("")[0];
+                    String y = result.split("")[1];
+                    URL = "http://168.188.129.191/test_find_others.php?x="+x+"&y="+y;
+                    String others = null;
+                    try {
+                        others = connect.execute(URL).get();
+                    } catch (ExecutionException e) {
+                        e.printStackTrace();
+                    } catch (InterruptedException e) {
+                        e.printStackTrace();
+                    }
+
+                    if(others==null){
+                        toast_cant_find_location();
+                    }else{
+                        otherPhones = new String[others.length()];
+                        for(int i=0; i<others.length();i++){
+                            otherPhones[i] = String.valueOf(others.charAt(i));
+                        }
+                    }
+                }
+
                 bleTester.BleTestFunc(id);
 
                 //get needed datas from bleTester :
@@ -92,5 +141,9 @@ public class MainActivity extends AppCompatActivity {
         });
 
 
+    }
+
+    public void toast_cant_find_location(){
+        Toast.makeText(this,"error", Toast.LENGTH_SHORT).show();
     }
 }

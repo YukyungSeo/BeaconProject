@@ -56,8 +56,6 @@ public class BleTester {
 
 
 
-
-
         return null;
     }
     public void BleTestFunc(String myID) {
