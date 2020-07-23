@@ -85,12 +85,12 @@ public class MainActivity extends AppCompatActivity {
                 id=idedittext.getText().toString();
 
                 //server에서  자기 포함 값 가져오기
-                PHPConnect connect = new PHPConnect();
+                PHPConnect connect1 = new PHPConnect();
                 String URL = "http://168.188.129.191/test_find_location.php?id="+id_text.getText().toString();
                 String result = null;
                 String[] otherPhones;
                 try {
-                    result = connect.execute(URL).get();
+                    result = connect1.execute(URL).get();
                 } catch (ExecutionException e) {
                     e.printStackTrace();
                 } catch (InterruptedException e) {
@@ -107,10 +107,10 @@ public class MainActivity extends AppCompatActivity {
                         toast_error();
                         return;
                     }
-
+                    PHPConnect connect2 = new PHPConnect();
                     String others = null;
                     try {
-                        others = connect.execute(URL).get();
+                        others = connect2.execute(URL).get();
                     } catch (ExecutionException e) {
                         e.printStackTrace();
                     } catch (InterruptedException e) {
