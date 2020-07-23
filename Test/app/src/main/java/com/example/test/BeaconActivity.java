@@ -207,17 +207,19 @@ public class BeaconActivity extends AppCompatActivity {
 
         Point2D triPoint = Trilateration.getTrilateration(BeaconPoint[shortest1], BeaconPoint[shortest2], BeaconPoint[shortest3]);
 
-        int[] region = new int[2];
+        int[] region = new int[4];
+        region[2] = (int) triPoint.getX();
+        region[3] = (int) triPoint.getY();
 
         if(triPoint.getX() < 3)         region[0] = 0;
         else if (triPoint.getX() < 6)   region[0] = 1;
         else if (triPoint.getX() <= 9)  region[0] = 2;
-        else return null;
+        else region[0] = 3;
 
         if(triPoint.getY() < 3)         region[1] = 0;
         else if (triPoint.getY() < 6)   region[1] = 1;
         else if (triPoint.getY() <= 9)  region[1] = 2;
-        else return null;
+        else region[1] = 3;
 
         return region;
     }

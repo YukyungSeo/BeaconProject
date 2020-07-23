@@ -168,12 +168,9 @@ public class MainActivity extends AppCompatActivity {
                 if(regionXY != null) {
                     x += regionXY[0];   // x값 삽입 해주세요.
                     y += regionXY[1];   // y값 삽입 해주세요.
-                    BLEDataText.setText(x+", "+y);
-                } else {
-                    x += "0";   // x값 삽입 해주세요.
-                    y += "0";   // y값 삽입 해주세요.
-                    BLEDataText.setText(x+", "+y);
+                    BLEDataText.setText("regionXY: (" + x + ", " + y + "), point2D: (" + regionXY[2] + ", " + regionXY[3] + ")");
                 }
+
                 String URL = "http://168.188.129.191/test_save_location.php?id=" + id_text.getText().toString() + "&x=" + x + "&y=" + y;
                 connect.execute(URL);
                 break;
