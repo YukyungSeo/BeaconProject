@@ -26,8 +26,8 @@ public class BeaconActivity extends AppCompatActivity {
     public static final String FL = "eb6e331d9821";
     public static final String FM = "f0bbb41f285a";
     public static final String FR = "e2d7d0cf903e";
-    public static final String ML = "FD";
-    public static final String MR = "FE";
+    public static final String ML = "f9fB14467c41";
+    public static final String MR = "f6e400f50029";
     public static final String BL = "FF";
     public static final String BM = "FG";
     public static final String BR = "FH";
@@ -79,7 +79,7 @@ public class BeaconActivity extends AppCompatActivity {
                 Log.d("AttendanceCheck", "stopbeacon");
                 getMedian();
 
-                // regionXY를 서버로 전송하면 됨
+                // 삼변축량 & regionXY 계산
                 int[] regionXY = getRegion();
                 if(regionXY != null)
                     Log.d("AttendanceCheck final region", regionXY[0] + ", " +regionXY[1]);
@@ -144,19 +144,19 @@ public class BeaconActivity extends AppCompatActivity {
                 break;
             case ML:
                 if (MLSize < SIGNAL_LIMIT){
-                    BeaconsPackets[4][MLSize] = distant;
+                    BeaconsPackets[3][MLSize] = distant;
                     MLSize++;
                 }
                 break;
             case MR:
                 if (MRSize < SIGNAL_LIMIT) {
-                    BeaconsPackets[3][MRSize] = distant;
+                    BeaconsPackets[4][MRSize] = distant;
                     MRSize++;
                 }
                 break;
             case BL:
                 if (BLSize < SIGNAL_LIMIT) {
-                    BeaconsPackets[7][BLSize] = distant;
+                    BeaconsPackets[5][BLSize] = distant;
                     BLSize++;
                 }
                 break;
@@ -168,7 +168,7 @@ public class BeaconActivity extends AppCompatActivity {
                 break;
             case BR:
                 if (BRSize < SIGNAL_LIMIT) {
-                    BeaconsPackets[5][BRSize] = distant;
+                    BeaconsPackets[7][BRSize] = distant;
                     BRSize++;
                 }
                 break;
