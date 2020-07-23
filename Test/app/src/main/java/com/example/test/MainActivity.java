@@ -66,7 +66,7 @@ public class MainActivity extends AppCompatActivity {
                 id_text= (TextView) findViewById(R.id.idInputText);  //입력받은 id 값
                 //1단계 부분입니다.
                 Intent intent = new Intent(MainActivity.this, BeaconActivity.class) ;
-                startActivityForResult(intent, 0); ;
+                startActivityForResult(intent, 0);
             }
         });
 
@@ -170,8 +170,8 @@ public class MainActivity extends AppCompatActivity {
                     y += regionXY[1];   // y값 삽입 해주세요.
                     BLEDataText.setText(x+", "+y);
                 } else {
-                    x += "null";   // x값 삽입 해주세요.
-                    y += "null";   // y값 삽입 해주세요.
+                    x += "0";   // x값 삽입 해주세요.
+                    y += "0";   // y값 삽입 해주세요.
                     BLEDataText.setText(x+", "+y);
                 }
                 String URL = "http://168.188.129.191/test_save_location.php?id=" + id_text.getText().toString() + "&x=" + x + "&y=" + y;
