@@ -99,9 +99,15 @@ public class MainActivity extends AppCompatActivity {
                 if(result == null){ // web error로 오류가 생겼을 경우
                     toast_cant_find_location();
                 }else{  // 정상의 경우
-                    String x = result.split("")[0];
-                    String y = result.split("")[1];
-                    URL = "http://168.188.129.191/test_find_others.php?x="+x+"&y="+y;
+                    if(result.length()==2) {
+                        String x = result.split("")[0];
+                        String y = result.split("")[1];
+                        URL = "http://168.188.129.191/test_find_others.php?x="+x+"&y="+y;
+                    }else{
+                        toast_error();
+                        return;
+                    }
+
                     String others = null;
                     try {
                         others = connect.execute(URL).get();
@@ -143,6 +149,10 @@ public class MainActivity extends AppCompatActivity {
         });
 
 
+    }
+
+    private void toast_error() {
+        Toast.makeText(this,"x,y 좌표로 출력이 안됨", Toast.LENGTH_SHORT).show();
     }
 
     @Override
