@@ -120,10 +120,21 @@ public class MainActivity extends AppCompatActivity {
                     if(others==null){
                         toast_cant_find_location();
                     }else{
-                        otherPhones = new String[others.length()];
+                        //otherPhones = new String[others.length()];
+                        String temp="";
+                        for(int l=0; l<others.length(); l++){
+                            temp+=String.valueOf(others.charAt(l));
+                        }
+                        otherPhones=temp.split("<br>");
+
+                        //otherPhones=new String[rt.length];
+
+                        /*
                         for(int i=0; i<others.length();i++){
                             otherPhones[i] = String.valueOf(others.charAt(i));
                         }
+
+                         */
                         bleTester.setIDFromServer(otherPhones);
                     }
                 }

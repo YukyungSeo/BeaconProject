@@ -54,6 +54,14 @@ public class BleTester {
     }
     public void setIDFromServer(String[] fromServer){
         // 서버에서 받아온 같은 영역에 있는 phone들의 ID string 목록임
+
+        if(fromServer.length==0){
+            System.out.println("from server data size 0");
+        }else {
+            for (int k = 0; k < fromServer.length; k++) {
+                System.out.println("hjhjt sv data  " + fromServer[k]);
+            }
+        }
         if(fromServer==null) {
             System.out.println("hjhj from server null");
         }else {
@@ -243,7 +251,9 @@ public class BleTester {
 
     private void checkPhonesNearBeacon(String[] idFromServer, phoneInfo[] phonesBLE){
         if(idFromServer.length==this.PhoneIDSizeFromServer) {
+
             for (int i = 0; i < this.PhoneIDSizeFromServer; i++) {
+                System.out.println("hjhj sv in check func"+idFromServer[i]);
                 boolean findSameID=false;
                 for(int j=0; j<this.PhoneSizeFromBleScanned; j++){
                     if(idFromServer[i].equals(phonesBLE[j].getID())){   //중복아이디 고려 안함
