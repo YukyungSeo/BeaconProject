@@ -20,20 +20,14 @@ public class MainActivity extends AppCompatActivity {
     TextView id_text;
     Button firstButton;
     Button secondButton;
-    TextView BLEDataText;
+    //TextView BLEDataText;
     //추가로 변수가 필요할 경우 단톡방에 꼭 말해주세요.
     //push 할때도 꼭 단톡방에 말해주세요.
 
-    //**************************************
-    //*** BLE advertsing and scanner SOURCE
-    //*** BLE advertsing and scanner SOURCE
+    //추가 변수들 :
     BleTester bleTester;
-    EditText idedittext;
     String id;
     String[] results;
-    //BLE advertsing and scanner SOURCE ***//
-    //BLE advertsing and scanner SOURCE ***//
-    //**************************************
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -42,23 +36,12 @@ public class MainActivity extends AppCompatActivity {
 
         firstButton = (Button)findViewById(R.id.firstButton);
         secondButton = (Button)findViewById(R.id.secondButton);
-        BLEDataText = (TextView) findViewById(R.id.BLEDataText);
+        TextView BLEDataText = (TextView) findViewById(R.id.BLEDataText);
+        //BLEDataText.
+        BLEDataText.setText("왜안나와1");
 
-
-
-        //**************************************
-        //*** BLE advertsing and scanner SOURCE
-        //*** BLE advertsing and scanner SOURCE
-
+        // BleTester 객체 생성 :
         bleTester=new BleTester(this.getApplicationContext(), this);
-        idedittext= (EditText)findViewById(R.id.idInputText);
-
-        //String[] otherPhones;
-
-        //BLE advertsing and scanner SOURCE ***//
-        //BLE advertsing and scanner SOURCE ***//
-        //**************************************
-
 
         firstButton.setOnClickListener(new View.OnClickListener(){
             @Override
@@ -74,17 +57,12 @@ public class MainActivity extends AppCompatActivity {
             @Override
             public void onClick(View v) {
                 id_text= (TextView) findViewById(R.id.idInputText);  //입력받은 id 값
+                TextView BLEDataText2 = (TextView) findViewById(R.id.BLEDataText);
                 //2단계 부분입니다.
                 //BLEDataText에 같은 영역의 BLE를 출력하면 됩니다.
+                id=id_text.getText().toString();
 
-                //**************************************
-                //*** BLE advertsing and scanner SOURCE
-                //*** BLE advertsing and scanner SOURCE
-
-                //advertising, scanning, setting datas :
-                id=idedittext.getText().toString();
-
-                //server에서  자기 포함 값 가져오기
+                //server에서  자기 포함 값 가져오기 :
                 PHPConnect connect1 = new PHPConnect();
                 String URL = "http://168.188.129.191/test_find_location.php?id="+id_text.getText().toString();
                 String result = null;
@@ -120,41 +98,30 @@ public class MainActivity extends AppCompatActivity {
                     if(others==null){
                         toast_cant_find_location();
                     }else{
-                        //otherPhones = new String[others.length()];
                         String temp="";
                         for(int l=0; l<others.length(); l++){
                             temp+=String.valueOf(others.charAt(l));
                         }
                         otherPhones=temp.split("<br>");
-
-                        //otherPhones=new String[rt.length];
-
-                        /*
-                        for(int i=0; i<others.length();i++){
-                            otherPhones[i] = String.valueOf(others.charAt(i));
-                        }
-
-                         */
                         bleTester.setIDFromServer(otherPhones);
                     }
                 }
 
-                //bleTester.setIDFromServer(otherPhones);
-                bleTester.BleTestFunc(id);
+                //Ble Test 시작 :
+                bleTester.BleTestFunc(id,BLEDataText2);
+
+                //Ble Test 결과 return :
+                /*
                 results=bleTester.getResult();
-
-                //get needed datas from bleTester :
-
-                //BLE advertsing and scanner SOURCE ***//
-                //BLE advertsing and scanner SOURCE ***//
-                //**************************************
-
                 String DataText = "";
+
                 for(int i = 0; i<results.length;i++){
                     DataText += (i+1)+"번째 결과 값"+results[i]+"\n";
+                    System.out.println("hjhj result2 "+ results[i]);
                 }
-
-                BLEDataText.setText(DataText);
+                BLEDataText2.setText("LOL BLE");
+                 */
+                //BLEDataText2.setText(DataText);
 
             }
         });
@@ -169,6 +136,7 @@ public class MainActivity extends AppCompatActivity {
     @Override
     protected void onActivityResult(int requestCode, int resultCode, Intent data) {
         super.onActivityResult(requestCode, resultCode, data);
+        TextView BLEDataText3 = (TextView) findViewById(R.id.BLEDataText);
         switch(requestCode){
             case 0: {
                 PHPConnect connect = new PHPConnect();
@@ -179,7 +147,7 @@ public class MainActivity extends AppCompatActivity {
                 if(regionXY != null) {
                     x += regionXY[0];   // x값 삽입 해주세요.
                     y += regionXY[1];   // y값 삽입 해주세요.
-                    BLEDataText.setText("regionXY: (" + x + ", " + y + "), point2D: (" + regionXY[2] + ", " + regionXY[3] + ")");
+                    BLEDataText3.setText("regionXY: (" + x + ", " + y + "), point2D: (" + regionXY[2] + ", " + regionXY[3] + ")");
                 }
 
                 String URL = "http://168.188.129.191/test_save_location.php?id=" + id_text.getText().toString() + "&x=" + x + "&y=" + y;

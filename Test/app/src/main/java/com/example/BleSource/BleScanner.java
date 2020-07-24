@@ -28,9 +28,6 @@ import java.util.Map;
 import java.util.UUID;
 
 import static com.example.BleSource.BleAdvertiser.UUID_tempt;
-
-//import android.support.v7.app.AppCompatActivity;
-
 public class BleScanner {
 
     private final static String TAG="hjhjsc";
@@ -66,7 +63,6 @@ public class BleScanner {
     public static ParcelUuid pUuid = new ParcelUuid(UUID.fromString(UUID_tempt));
     String temp;
     public class INFO{
-       // String id;
         String mac;
 
         int sigSize;
@@ -181,11 +177,6 @@ public class BleScanner {
         filters.add(sf1);
         /*ScanFilter mscanfilter = new ScanFilter.Builder().setServiceUuid(pUuid).build();
         filters.add(mscanfilter);*/
-
-
-        ///t
-
-
         ScanSettings settings= new ScanSettings.Builder().setScanMode( ScanSettings.SCAN_MODE_LOW_POWER ).setScanMode(ScanSettings.SCAN_MODE_LOW_LATENCY).build();
         //ScanSettings st= new ScanSettings.Builder().
         //ble 스캐너 설정
@@ -203,10 +194,6 @@ public class BleScanner {
     private class BLEScanCallback extends ScanCallback {
         private Map<String, BluetoothDevice> cb_scan_results_;
 
-        BLEScanCallback() {
-
-        }
-
         //스캔 결과 저장
         BLEScanCallback(Map<String, BluetoothDevice> _scan_results) {
             cb_scan_results_ = _scan_results;
@@ -218,7 +205,6 @@ public class BleScanner {
         public void onScanResult(int _callback_type, ScanResult _result) {
             Log.d(TAG, "onScanResult");
             super.onScanResult(_callback_type, _result);
-
             /*if(_result == null || _result.getDevice()==null || TextUtils.isEmpty(_result.getDevice().getName())) {
                 StringBuilder builder = new StringBuilder(_result.getDevice().getName());
                 builder.append("\n").append(new String(_result.getScanRecord().getServiceData(_result.getScanRecord().getServiceUuids().get(0)), Charset.forName("UTF-8")));
@@ -226,8 +212,6 @@ public class BleScanner {
             }else{
                 System.out.print("not found");
             }*/
-
-
             addScanResult(_result);
         }
 
@@ -246,17 +230,14 @@ public class BleScanner {
         //스캔 결과값 출력을 위해 리스트에 저장
         //원하는 값을 빼내서 리스트에 저장하면 됨
         private void addScanResult(ScanResult _result) {
-            // get scanned device
+
             BluetoothDevice device = _result.getDevice();
-            // get scanned device MAC address
             String device_address = device.getAddress(); //mac
             String device_name=device.getName();
-            //device.getUuids().
             // add the device to the result list
             cb_scan_results_.put(device_name, device);
 
             int rs=_result.getRssi();
-           //int tx= _result.getTxPower();
            int yy=_result.getScanRecord().getTxPowerLevel();
            int tx=txLevelToPower(yy);
            System.out.println("hjhjsc txl  "+yy);
@@ -264,19 +245,6 @@ public class BleScanner {
             byte[] sdata=_result.getScanRecord().getServiceData().get(ParcelUuid.fromString(UUID_tempt));
             String sdatatoString=new String(sdata, StandardCharsets.US_ASCII);
 
-
-
-            //byte[] resultdata= _result.getScanRecord().getManufacturerSpecificData(1);
-            //byte[] scannedIDByte=new byte[20];
-            /*
-            for(int k=0; k<20; k++){
-
-                scannedIDByte[k]=resultdata[k+5];
-
-            }
-            String scannedID=scannedIDByte.toString();
-
-            */
             int phnum=scdSize+1;
             String name="phn"+phnum;
             String macadr=ad;
@@ -311,31 +279,10 @@ public class BleScanner {
 
             Log.d("hjhjsc id(name)",name);
             Log.d("hjhjsc myResult Size : ",""+myResult.size());
-
-
-            // log
             Log.d("hjhjsc ", String.valueOf(cb_scan_results_.size()));
             Log.d("hjhjsc addr ", String.valueOf(device_address));
-            //System.out.println(_result);
-            //System.out.println(device);
-            //Log.d( TAG, "scan results device2: " + device_address );
-            //temp = device_address;
-        }
-
-
-
-        private void printScanResult() {
-
-            for (int i = 0; i < cb_scan_results_.size(); i++) {
-
-
-            }
-
-
         }
     }
-
-
 
     public int txLevelToPower(int level){
         int txPw=0;
