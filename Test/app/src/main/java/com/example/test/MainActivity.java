@@ -1,26 +1,27 @@
 package com.example.test;
 
-import androidx.appcompat.app.AppCompatActivity;
-
 import android.content.Intent;
 import android.os.Bundle;
 import android.view.View;
 import android.widget.Button;
-import android.widget.EditText;
 import android.widget.TextView;
 import android.widget.Toast;
 
-import java.util.concurrent.ExecutionException;
-//*** import for BLE
-//*** import for BLE
+import androidx.appcompat.app.AppCompatActivity;
+
 import com.example.BleSource.BleTester;
+
+import java.util.concurrent.ExecutionException;
+
+//*** import for BLE
+//*** import for BLE
 //import for BLE ***//
 //import for BLE ***//
 public class MainActivity extends AppCompatActivity {
     TextView id_text;
     Button firstButton;
     Button secondButton;
-    //TextView BLEDataText;
+    TextView BLEDataText;
     //추가로 변수가 필요할 경우 단톡방에 꼭 말해주세요.
     //push 할때도 꼭 단톡방에 말해주세요.
 
@@ -36,9 +37,7 @@ public class MainActivity extends AppCompatActivity {
 
         firstButton = (Button)findViewById(R.id.firstButton);
         secondButton = (Button)findViewById(R.id.secondButton);
-        TextView BLEDataText = (TextView) findViewById(R.id.BLEDataText);
-        //BLEDataText.
-        BLEDataText.setText("왜안나와1");
+        BLEDataText = (TextView) findViewById(R.id.BLEDataText);
 
         // BleTester 객체 생성 :
         bleTester=new BleTester(this.getApplicationContext(), this);
@@ -62,66 +61,64 @@ public class MainActivity extends AppCompatActivity {
                 //BLEDataText에 같은 영역의 BLE를 출력하면 됩니다.
                 id=id_text.getText().toString();
 
-                //server에서  자기 포함 값 가져오기 :
-                PHPConnect connect1 = new PHPConnect();
-                String URL = "http://168.188.129.191/test_find_location.php?id="+id_text.getText().toString();
-                String result = null;
-                String[] otherPhones;
-                try {
-                    result = connect1.execute(URL).get();
-                } catch (ExecutionException e) {
-                    e.printStackTrace();
-                } catch (InterruptedException e) {
-                    e.printStackTrace();
-                }
-                if(result == null){ // web error로 오류가 생겼을 경우
-                    toast_cant_find_location();
-                }else{  // 정상의 경우
-                    if(result.length()==2) {
-                        String x = result.split("")[0];
-                        String y = result.split("")[1];
-                        URL = "http://168.188.129.191/test_find_others.php?x="+x+"&y="+y;
-                    }else{
-                        toast_error();
-                        return;
-                    }
-                    PHPConnect connect2 = new PHPConnect();
-                    String others = null;
+                boolean BLETESTMODE=true;
+
+                if(BLETESTMODE==true){  //서버에서 값 안가져오고 테스트 할때
+                    bleTester.setVirtualID();
+                    System.out.println("BLE TEST MODE - NO SERVER DATA");
+
+                }else {
+                    //server에서  자기 포함 값 가져오기 :
+                    PHPConnect connect1 = new PHPConnect();
+                    String URL = "http://168.188.129.191/test_find_location.php?id="+id_text.getText().toString();
+                    String result = null;
+                    String[] otherPhones;
                     try {
-                        others = connect2.execute(URL).get();
+                        result = connect1.execute(URL).get();
                     } catch (ExecutionException e) {
                         e.printStackTrace();
                     } catch (InterruptedException e) {
                         e.printStackTrace();
                     }
-
-                    if(others==null){
+                    if (result == null) { // web error로 오류가 생겼을 경우
                         toast_cant_find_location();
-                    }else{
-                        String temp="";
-                        for(int l=0; l<others.length(); l++){
-                            temp+=String.valueOf(others.charAt(l));
+                    } else {  // 정상의 경우
+                        if (result.length() == 2) {
+                            String x = result.split("")[0];
+                            String y = result.split("")[1];
+                            URL = "http://168.188.129.191/test_find_others.php?x=" + x + "&y=" + y;
+                        } else {
+                            toast_error();
+
                         }
-                        otherPhones=temp.split("<br>");
-                        bleTester.setIDFromServer(otherPhones);
+
+                        PHPConnect connect2 = new PHPConnect();
+                        String others = null;
+                        try {
+                            others = connect2.execute(URL).get();
+                        } catch (ExecutionException e) {
+                            e.printStackTrace();
+                        } catch (InterruptedException e) {
+                            e.printStackTrace();
+                        }
+
+                        if (others == null) {
+                            toast_cant_find_location();
+                        } else {
+                            String temp = "";
+                            for (int l = 0; l < others.length(); l++) {
+                                temp += String.valueOf(others.charAt(l));
+                            }
+                            otherPhones = temp.split("<br>");
+                            bleTester.setIDFromServer(otherPhones);
+                        }
+
                     }
                 }
 
                 //Ble Test 시작 :
+                //안드로이드 9와 10 에서 실행 확인한 코드입니다.
                 bleTester.BleTestFunc(id,BLEDataText2);
-
-                //Ble Test 결과 return :
-                /*
-                results=bleTester.getResult();
-                String DataText = "";
-
-                for(int i = 0; i<results.length;i++){
-                    DataText += (i+1)+"번째 결과 값"+results[i]+"\n";
-                    System.out.println("hjhj result2 "+ results[i]);
-                }
-                BLEDataText2.setText("LOL BLE");
-                 */
-                //BLEDataText2.setText(DataText);
 
             }
         });
@@ -147,7 +144,7 @@ public class MainActivity extends AppCompatActivity {
                 if(regionXY != null) {
                     x += regionXY[0];   // x값 삽입 해주세요.
                     y += regionXY[1];   // y값 삽입 해주세요.
-                    BLEDataText3.setText("regionXY: (" + x + ", " + y + "), point2D: (" + regionXY[2] + ", " + regionXY[3] + ")");
+                    BLEDataText.setText("regionXY: (" + x + ", " + y + "), point2D: (" + regionXY[2] + ", " + regionXY[3] + ")");
                 }
 
                 String URL = "http://168.188.129.191/test_save_location.php?id=" + id_text.getText().toString() + "&x=" + x + "&y=" + y;
