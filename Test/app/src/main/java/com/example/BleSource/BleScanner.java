@@ -93,17 +93,6 @@ public class BleScanner {
         this.myResult= new HashMap<>();
         this.scdSize=0;
         this.ids=new String[100];
-        //ble_scanner_ =BluetoothAdapter.getDefaultAdapter().getBluetoothLeScanner();
-
-        if(ble_adapter_.isEnabled()){
-            System.out.println(TAG+" adapter is enable true");
-        }else{System.out.println(TAG+" adapter is enable false ");}
-
-        if(ble_adapter_.isDiscovering()){
-            System.out.println(TAG+" adapter is discovering true");
-        }else{
-            System.out.println(TAG+" adapter is discovering false");
-        }
     }
     public void stopScan(){
         ble_scanner_.stopScan(scan_cb_);
@@ -114,20 +103,16 @@ public class BleScanner {
         this.myResult.clear();
         this.scdSize=0;
         this.ids=new String[100];
-        System.out.println(TAG+"START SCAN1");
         if (ble_adapter_ == null || !ble_adapter_.isEnabled()) {
 
             requestEnableBLE(this.thisFA);
             return;
         }
-        System.out.println(TAG+"START SCAN2");
         if (thisContext.checkSelfPermission(Manifest.permission.ACCESS_COARSE_LOCATION) != PackageManager.PERMISSION_GRANTED) {
             requestLocationPermission(this.thisFA);
             return;
         }
-        System.out.println(TAG+"START SCAN3");
         List<ScanFilter> filters = new ArrayList<>();
-        System.out.println(TAG+"START SCAN4");
         //Scan Filtering 이 동작 안 됨. 원인 불명.
         /*
         sfb=new ScanFilter.Builder();
@@ -137,13 +122,10 @@ public class BleScanner {
        filters.add(sf1);
        */
         ScanSettings settings= new ScanSettings.Builder().setScanMode( ScanSettings.SCAN_MODE_LOW_POWER ).setScanMode(ScanSettings.SCAN_MODE_LOW_LATENCY).build();
-        System.out.println(TAG+"START SCAN5");
         scan_results_= new HashMap<>();
         scan_cb_= new BLEScanCallback( scan_results_ );
-        System.out.println(TAG+"START SCAN6");
         ble_scanner_ =BluetoothAdapter.getDefaultAdapter().getBluetoothLeScanner();
         ble_scanner_.startScan( filters, settings, scan_cb_ );
-        System.out.println(TAG+"START SCAN7");
         is_scanning_= true;
     }
 

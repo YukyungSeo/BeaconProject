@@ -46,19 +46,13 @@ public class BleTester {
         setMyID(myID);
         setTextView(datatxt);
         showScanning(datatxt);
-        System.out.println(TAG+" line1");
         myAdvertiser().advertising1(getMyID());
-        System.out.println(TAG+" line2");
         myScanner().startScan();
-        System.out.println(TAG+" line3");
         Handler timer = new Handler(); //Handler 생성
         timer.postDelayed(new Runnable() { //2초후 쓰레드를 생성하는 postDelayed 메소드
             public void run() {
-                System.out.println(TAG+" line4");
                 myScanner().stopScan();
-                System.out.println(TAG+" line5");
                 myAdvertiser().stopAdvertising();
-                System.out.println(TAG+" line6");
                 BleTestFunc2(getTextView());
 
             }
@@ -69,7 +63,6 @@ public class BleTester {
         PhoneSizeFromBleScanned=PhonesFromBleScanned.length;
 
         for(int v=0; v<this.PhoneSizeFromBleScanned; v++) {
-            Log.d("hjhj re ",PhonesFromBleScanned[v].phoneID+"  는 ");
             if (ifNear(PhonesFromBleScanned[v].getDist())) {
                 PhonesFromBleScanned[v].setNearByBLE(true);
             }
@@ -95,7 +88,6 @@ public class BleTester {
                 }
                 if(findSameID==true) {
                 }else{
-                    System.out.println(TAG+"ID NOT IN LIST");
                 }
             }
         }else{

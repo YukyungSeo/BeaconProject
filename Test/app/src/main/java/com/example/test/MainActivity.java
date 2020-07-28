@@ -65,7 +65,7 @@ public class MainActivity extends AppCompatActivity {
 
                 if(BLETESTMODE==true){  //서버에서 값 안가져오고 테스트 할때
                     bleTester.setVirtualID();
-                    System.out.println("BLE TEST MODE - NO SERVER DATA");
+                    System.out.println("BLE TEST MODE");
 
                 }else {
                     //server에서  자기 포함 값 가져오기 :
