@@ -19,8 +19,7 @@ import java.util.concurrent.ExecutionException;
 //import for BLE ***//
 public class MainActivity extends AppCompatActivity {
     TextView id_text;
-    Button firstButton;
-    Button secondButton;
+    Button startButton;
     TextView BLEDataText;
     //추가로 변수가 필요할 경우 단톡방에 꼭 말해주세요.
     //push 할때도 꼭 단톡방에 말해주세요.
@@ -35,33 +34,25 @@ public class MainActivity extends AppCompatActivity {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_main);
 
-        firstButton = (Button)findViewById(R.id.firstButton);
-        secondButton = (Button)findViewById(R.id.secondButton);
+        startButton = (Button)findViewById(R.id.start_button);
         BLEDataText = (TextView) findViewById(R.id.BLEDataText);
 
         // BleTester 객체 생성 :
         bleTester=new BleTester(this.getApplicationContext(), this);
 
-        firstButton.setOnClickListener(new View.OnClickListener(){
+        startButton.setOnClickListener(new View.OnClickListener(){
             @Override
             public void onClick(View v) {
                 id_text= (TextView) findViewById(R.id.idInputText);  //입력받은 id 값
                 //1단계 부분입니다.
                 Intent intent = new Intent(MainActivity.this, BeaconActivity.class) ;
                 startActivityForResult(intent, 0);
-            }
-        });
 
-        secondButton.setOnClickListener(new View.OnClickListener(){
-            @Override
-            public void onClick(View v) {
-                id_text= (TextView) findViewById(R.id.idInputText);  //입력받은 id 값
-                TextView BLEDataText2 = (TextView) findViewById(R.id.BLEDataText);
                 //2단계 부분입니다.
                 //BLEDataText에 같은 영역의 BLE를 출력하면 됩니다.
                 id=id_text.getText().toString();
 
-                boolean BLETESTMODE=true;
+                boolean BLETESTMODE=false;
 
                 if(BLETESTMODE==true){  //서버에서 값 안가져오고 테스트 할때
                     bleTester.setVirtualID();
@@ -118,8 +109,7 @@ public class MainActivity extends AppCompatActivity {
 
                 //Ble Test 시작 :
                 //안드로이드 9와 10 에서 실행 확인한 코드입니다.
-                bleTester.BleTestFunc(id,BLEDataText2);
-
+//                bleTester.BleTestFunc(id,BLEDataText2);
             }
         });
 

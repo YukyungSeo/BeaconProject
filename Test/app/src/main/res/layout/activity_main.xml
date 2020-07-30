@@ -7,38 +7,27 @@
     tools:context=".MainActivity">
 
     <Button
-        android:id="@+id/secondButton"
-        android:layout_width="346dp"
-        android:layout_height="58dp"
-        android:text="2단계"
-        app:layout_constraintBottom_toBottomOf="parent"
-        app:layout_constraintEnd_toEndOf="parent"
-        app:layout_constraintHorizontal_bias="0.507"
-        app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintTop_toBottomOf="@+id/firstButton"
-        app:layout_constraintVertical_bias="0.0" />
-
-    <Button
-        android:id="@+id/firstButton"
+        android:id="@+id/start_button"
         android:layout_width="346dp"
         android:layout_height="58dp"
         android:layout_marginTop="168dp"
-        android:text="1단계"
+        android:text="전송 시작"
+        app:layout_constraintBottom_toTopOf="@+id/BLEText"
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintHorizontal_bias="0.507"
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintTop_toTopOf="parent" />
 
 
-
     <EditText
         android:id="@+id/idInputText"
         android:layout_width="264dp"
         android:layout_height="48dp"
+        android:layout_marginTop="172dp"
         android:ems="10"
         android:hint="아이디 입력"
         android:inputType="textPersonName"
-        app:layout_constraintBottom_toTopOf="@+id/firstButton"
+        app:layout_constraintBottom_toTopOf="@+id/start_button"
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintHorizontal_bias="0.272"
         app:layout_constraintStart_toEndOf="@+id/idText"
@@ -49,10 +38,11 @@
         android:id="@+id/idText"
         android:layout_width="70dp"
         android:layout_height="49dp"
+        android:layout_marginTop="172dp"
         android:text="ID"
         android:textAlignment="center"
         android:textSize="25sp"
-        app:layout_constraintBottom_toTopOf="@+id/firstButton"
+        app:layout_constraintBottom_toTopOf="@+id/start_button"
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintHorizontal_bias="0.096"
         app:layout_constraintStart_toStartOf="parent"
@@ -78,8 +68,6 @@
         app:layout_constraintBottom_toTopOf="@+id/BLEDataText"
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintHorizontal_bias="0.498"
-        app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintTop_toBottomOf="@+id/secondButton"
-        app:layout_constraintVertical_bias="0.523" />
+        app:layout_constraintStart_toStartOf="parent" />
 
 </androidx.constraintlayout.widget.ConstraintLayout>
