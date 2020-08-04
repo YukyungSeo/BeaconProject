@@ -18,6 +18,8 @@ import android.util.Log;
 
 import androidx.fragment.app.FragmentActivity;
 
+import com.example.test.PHPConnect;
+
 import java.nio.charset.StandardCharsets;
 import java.util.ArrayList;
 import java.util.HashMap;
@@ -50,6 +52,7 @@ public class BleScanAndCollect {
     private String[] ids;
     Context thisContext=null;
     FragmentActivity thisFA;
+    String myid;
 
     public class INFO{
         String mac;
@@ -84,8 +87,8 @@ public class BleScanAndCollect {
         }
     }
 
-
-    public BleScanAndCollect(BluetoothManager bm, Context ctx, FragmentActivity fa){
+    PHPConnect connect ;
+    public BleScanAndCollect(BluetoothManager bm, Context ctx, FragmentActivity fa,String mi){
 
         this.thisContext=ctx;
         this.thisFA=fa;
@@ -93,6 +96,8 @@ public class BleScanAndCollect {
         this.myResult= new HashMap<>();
         this.scdSize=0;
         this.ids=new String[100];
+        connect = new PHPConnect();
+        this.myid=mi;
     }
     public void stopScan(){
         ble_scanner_.stopScan(scan_cb_);
@@ -173,6 +178,8 @@ public class BleScanAndCollect {
                     myResult.get(address).stackSignal(rs,tx);
                     //서버로 보낼 ID = tempID
                     //서버로 보낼 rssi = rs
+                    String URL = "http://168.188.129.191/send_ble_data.php?id="+myid+"&other_id="+tempID+"&rssi="+rs;
+                    connect.execute(URL);
 
 
 

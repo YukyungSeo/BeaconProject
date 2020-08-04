@@ -12,7 +12,7 @@ public class BleTestDataCollect {
 
 
     private BleAdvertiser bleAdvr;
-    private BleScanner bleScr;
+    private BleScanAndCollect bleScr;
     private BluetoothManager bleMgr;
     private Build.VERSION api;
     String TAG="LOG --- ";
@@ -25,10 +25,10 @@ public class BleTestDataCollect {
     private String[] PhoneIDFromServer;
     private phoneInfo[] PhonesFromBleScanned; //ble신호로 받은 같은 어플을 사용하는 폰들
 
-    public BleTestDataCollect(Context thisctx, FragmentActivity fa){
+    public BleTestDataCollect(Context thisctx, FragmentActivity fa,String mmmi){
         bleAdvr= new BleAdvertiser(thisctx);
         bleMgr=(BluetoothManager)thisctx.getSystemService( Context.BLUETOOTH_SERVICE );
-        bleScr= new BleScanner(bleMgr,thisctx, fa);
+        bleScr= new BleScanAndCollect(bleMgr,thisctx, fa,mmmi);
 
 
 
@@ -56,28 +56,6 @@ public class BleTestDataCollect {
 
             }
         }, 180000); //60000 == 1분
-    }
-    public void BleDataCollect(TextView resultView){
-        PhonesFromBleScanned=scanfilteredPhoneDatas();
-        PhoneSizeFromBleScanned=PhonesFromBleScanned.length;
-        showResult(resultView);
-    }
-
-
-
-    private phoneInfo[] scanfilteredPhoneDatas(){   //BleScanner에서 스캔된 결과 가져옴
-
-        int sz= myScanner().getAddrsSize();
-        phoneInfo[] temppi=new phoneInfo[sz];
-        BleScanner.INFO temp;
-
-        for(int g=0; g<sz; g++){
-            String tpid =myScanner().ids()[g];
-            temp=myScanner().getScanned().get(tpid);
-
-            temppi[g]=new phoneInfo(tpid,temp.RSSI(),temp.sigSize);
-        }
-        return temppi;
     }
 
     public void showResult(TextView tv){    //MainActivity 에 BLE TEST 결과 출력
@@ -136,7 +114,7 @@ public class BleTestDataCollect {
     private BleAdvertiser myAdvertiser(){
         return this.bleAdvr;
     }
-    private BleScanner myScanner(){
+    private BleScanAndCollect myScanner(){
         return this.bleScr;
     }
     private void setTextView(TextView tv){
