@@ -2,6 +2,8 @@ package com.example.test;
 
 import android.content.Intent;
 import android.os.Bundle;
+import android.os.Handler;
+import android.util.Log;
 import android.view.View;
 import android.widget.Button;
 import android.widget.TextView;
@@ -9,8 +11,14 @@ import android.widget.Toast;
 
 import androidx.appcompat.app.AppCompatActivity;
 
+import com.estimote.coresdk.common.requirements.SystemRequirementsChecker;
+import com.estimote.coresdk.observation.region.beacon.BeaconRegion;
+import com.estimote.coresdk.recognition.packets.Beacon;
+import com.estimote.coresdk.service.BeaconManager;
 import com.example.BleSource.BleTester;
 
+import java.util.List;
+import java.util.UUID;
 import java.util.concurrent.ExecutionException;
 
 //*** import for BLE
@@ -25,6 +33,8 @@ public class MainActivity extends AppCompatActivity {
     //push 할때도 꼭 단톡방에 말해주세요.
 
     //추가 변수들 :
+    BeaconManager beaconManager;
+    BeaconRegion region;
     BleTester bleTester;
     String id;
     String[] results;
@@ -40,13 +50,49 @@ public class MainActivity extends AppCompatActivity {
         // BleTester 객체 생성 :
         bleTester=new BleTester(this.getApplicationContext(), this);
 
+        //수신 구역 설정 - 서버에서 받아와야함
+        region = new BeaconRegion("ranged region",
+                UUID.fromString("B9407F30-F5F8-466E-AFF9-25556B57FE6D"),
+                12313, 3040); // 본인이 연결할 beacon
+        // baeconManager 생성
+        beaconManager = new BeaconManager(this);
+
         startButton.setOnClickListener(new View.OnClickListener(){
             @Override
             public void onClick(View v) {
                 id_text= (TextView) findViewById(R.id.idInputText);  //입력받은 id 값
                 //1단계 부분입니다.
-                Intent intent = new Intent(MainActivity.this, BeaconActivity.class) ;
-                startActivityForResult(intent, 0);
+                //time limit 설정
+                Handler timer = new Handler(); //Handler 생성
+                timer.postDelayed(new Runnable(){ //2초후 쓰레드를 생성하는 postDelayed 메소드
+                    public void run(){
+                        beaconManager.disconnect();
+                        Log.d("AttendanceCheck", "stopbeacon");
+                    }
+                }, 20000); //60000 == 1분
+
+                // 비콘의 페킷 받음 & 서버 전송
+                beaconManager.setRangingListener((new BeaconManager.BeaconRangingListener() {
+                    @Override
+                    public void onBeaconsDiscovered(BeaconRegion beaconRegion, List<Beacon> beacons) {
+                        if(!beacons.isEmpty()){
+                            for(int i=0; i<beacons.size(); i++) {
+                                Beacon ConnectedBeacon = beacons.get(i);
+                                Log.d("AttendanceCheck" + i, ConnectedBeacon.toString());
+
+                                PHPConnect connect = new PHPConnect();
+                                String id = id_text.getText().toString();
+                                String rssi = ConnectedBeacon.getRssi() + "";
+                                String macAddr = ConnectedBeacon.getMacAddress().toString();
+                                String URL = "http://168.188.129.191/send_beacon_data.php?id="+id+"&rssi="+rssi+"&macAddr="+macAddr;
+                                connect.execute(URL);
+                            }
+                        } else {
+                            Toast.makeText(MainActivity.this, "비콘 없음 연결종료", Toast.LENGTH_SHORT).show();
+                        }
+                    }
+                }));
+
 
                 //2단계 부분입니다.
                 //BLEDataText에 같은 영역의 BLE를 출력하면 됩니다.
@@ -118,6 +164,25 @@ public class MainActivity extends AppCompatActivity {
 
     private void toast_error() {
         Toast.makeText(this,"x,y 좌표로 출력이 안됨", Toast.LENGTH_SHORT).show();
+    }
+
+    @Override
+    protected void onResume() {
+        super.onResume();
+
+        SystemRequirementsChecker.checkWithDefaultDialogs(this);
+
+        beaconManager.connect(new BeaconManager.ServiceReadyCallback() {
+            @Override
+            public void onServiceReady() {
+                beaconManager.startRanging(region);
+            }
+        });
+    }
+
+    @Override
+    protected void onPause(){
+        super.onPause();
     }
 
     @Override
