@@ -15,6 +15,7 @@ import com.estimote.coresdk.common.requirements.SystemRequirementsChecker;
 import com.estimote.coresdk.observation.region.beacon.BeaconRegion;
 import com.estimote.coresdk.recognition.packets.Beacon;
 import com.estimote.coresdk.service.BeaconManager;
+import com.example.BleSource.BleTestDataCollect;
 import com.example.BleSource.BleTester;
 
 import java.util.List;
@@ -35,7 +36,7 @@ public class MainActivity extends AppCompatActivity {
     //추가 변수들 :
     BeaconManager beaconManager;
     BeaconRegion region;
-    BleTester bleTester;
+    BleTestDataCollect bleTester;
     String id;
     String[] results;
 
@@ -48,7 +49,7 @@ public class MainActivity extends AppCompatActivity {
         BLEDataText = (TextView) findViewById(R.id.BLEDataText);
 
         // BleTester 객체 생성 :
-        bleTester=new BleTester(this.getApplicationContext(), this);
+        bleTester=new BleTestDataCollect(this.getApplicationContext(), this);
 
         //수신 구역 설정 - 서버에서 받아와야함
         region = new BeaconRegion("ranged region",
@@ -97,11 +98,11 @@ public class MainActivity extends AppCompatActivity {
                 //2단계 부분입니다.
                 //BLEDataText에 같은 영역의 BLE를 출력하면 됩니다.
                 id=id_text.getText().toString();
-
+                /*
                 boolean BLETESTMODE=false;
 
                 if(BLETESTMODE==true){  //서버에서 값 안가져오고 테스트 할때
-                    bleTester.setVirtualID();
+
                     System.out.println("BLE TEST MODE");
 
                 }else {
@@ -152,10 +153,10 @@ public class MainActivity extends AppCompatActivity {
 
                     }
                 }
-
+                */
                 //Ble Test 시작 :
                 //안드로이드 9와 10 에서 실행 확인한 코드입니다.
-//                bleTester.BleTestFunc(id,BLEDataText2);
+                bleTester.BleStart(id,BLEDataText);
             }
         });
 
