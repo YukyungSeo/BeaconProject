@@ -96,64 +96,6 @@ public class MainActivity extends AppCompatActivity {
 
 
                 //2단계 부분입니다.
-                //BLEDataText에 같은 영역의 BLE를 출력하면 됩니다.
-                id=id_text.getText().toString();
-                /*
-                boolean BLETESTMODE=false;
-
-                if(BLETESTMODE==true){  //서버에서 값 안가져오고 테스트 할때
-
-                    System.out.println("BLE TEST MODE");
-
-                }else {
-                    //server에서  자기 포함 값 가져오기 :
-                    PHPConnect connect1 = new PHPConnect();
-                    String URL = "http://168.188.129.191/test_find_location.php?id="+id_text.getText().toString();
-                    String result = null;
-                    String[] otherPhones;
-                    try {
-                        result = connect1.execute(URL).get();
-                    } catch (ExecutionException e) {
-                        e.printStackTrace();
-                    } catch (InterruptedException e) {
-                        e.printStackTrace();
-                    }
-                    if (result == null) { // web error로 오류가 생겼을 경우
-                        toast_cant_find_location();
-                    } else {  // 정상의 경우
-                        if (result.length() == 2) {
-                            String x = result.split("")[0];
-                            String y = result.split("")[1];
-                            URL = "http://168.188.129.191/test_find_others.php?x=" + x + "&y=" + y;
-                        } else {
-                            toast_error();
-
-                        }
-
-                        PHPConnect connect2 = new PHPConnect();
-                        String others = null;
-                        try {
-                            others = connect2.execute(URL).get();
-                        } catch (ExecutionException e) {
-                            e.printStackTrace();
-                        } catch (InterruptedException e) {
-                            e.printStackTrace();
-                        }
-
-                        if (others == null) {
-                            toast_cant_find_location();
-                        } else {
-                            String temp = "";
-                            for (int l = 0; l < others.length(); l++) {
-                                temp += String.valueOf(others.charAt(l));
-                            }
-                            otherPhones = temp.split("<br>");
-                            bleTester.setIDFromServer(otherPhones);
-                        }
-
-                    }
-                }
-                */
                 //Ble Test 시작 :
                 //안드로이드 9와 10 에서 실행 확인한 코드입니다.
                 bleTester.BleStart(id,BLEDataText);

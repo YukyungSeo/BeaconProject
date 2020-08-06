@@ -87,8 +87,8 @@ public class BleScanAndCollect {
         }
     }
 
-    PHPConnect connect ;
-    public BleScanAndCollect(BluetoothManager bm, Context ctx, FragmentActivity fa,String mi){
+
+    public BleScanAndCollect(BluetoothManager bm, Context ctx, FragmentActivity fa){
 
         this.thisContext=ctx;
         this.thisFA=fa;
@@ -96,14 +96,19 @@ public class BleScanAndCollect {
         this.myResult= new HashMap<>();
         this.scdSize=0;
         this.ids=new String[100];
-        connect = new PHPConnect();
-        this.myid=mi;
+
+        this.myid="TEST";
+
     }
     public void stopScan(){
         ble_scanner_.stopScan(scan_cb_);
         System.out.println(TAG+ " SCAN STOP");
     }
-    public void startScan() {
+    public String getMyID(){
+        return this.myid;
+    }
+    public void startScan(String mi) {
+        this.myid=mi;
 
         this.myResult.clear();
         this.scdSize=0;
@@ -178,7 +183,9 @@ public class BleScanAndCollect {
                     myResult.get(address).stackSignal(rs,tx);
                     //서버로 보낼 ID = tempID
                     //서버로 보낼 rssi = rs
-                    String URL = "http://168.188.129.191/send_ble_data.php?id="+myid+"&other_id="+tempID+"&rssi="+rs;
+                    PHPConnect connect = new PHPConnect();
+                    String URL = "http://168.188.129.191/send_ble_data.php?id="+getMyID()+"&other_id="+tempID+"&rssi="+rs;
+                    System.out.println("khjkhj - "+getMyID());
                     connect.execute(URL);
 
 

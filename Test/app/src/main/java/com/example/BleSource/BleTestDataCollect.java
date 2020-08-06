@@ -25,10 +25,10 @@ public class BleTestDataCollect {
     private String[] PhoneIDFromServer;
     private phoneInfo[] PhonesFromBleScanned; //ble신호로 받은 같은 어플을 사용하는 폰들
 
-    public BleTestDataCollect(Context thisctx, FragmentActivity fa,String mmmi){
+    public BleTestDataCollect(Context thisctx, FragmentActivity fa){
         bleAdvr= new BleAdvertiser(thisctx);
         bleMgr=(BluetoothManager)thisctx.getSystemService( Context.BLUETOOTH_SERVICE );
-        bleScr= new BleScanAndCollect(bleMgr,thisctx, fa,mmmi);
+        bleScr= new BleScanAndCollect(bleMgr,thisctx, fa);
 
 
 
@@ -45,7 +45,7 @@ public class BleTestDataCollect {
         showScanning(datatxt);
 
         myAdvertiser().advertising1(getMyID());
-        myScanner().startScan();
+        myScanner().startScan(getMyID());
 
         Handler timer = new Handler(); //Handler 생성
         timer.postDelayed(new Runnable() { //2초후 쓰레드를 생성하는 postDelayed 메소드
