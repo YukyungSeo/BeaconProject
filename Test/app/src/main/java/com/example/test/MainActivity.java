@@ -98,6 +98,7 @@ public class MainActivity extends AppCompatActivity {
                 //2단계 부분입니다.
                 //Ble Test 시작 :
                 //안드로이드 9와 10 에서 실행 확인한 코드입니다.
+                id = id_text.getText().toString();
                 bleTester.BleStart(id,BLEDataText);
             }
         });

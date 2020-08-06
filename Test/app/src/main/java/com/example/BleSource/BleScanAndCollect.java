@@ -184,7 +184,7 @@ public class BleScanAndCollect {
                     //서버로 보낼 ID = tempID
                     //서버로 보낼 rssi = rs
                     PHPConnect connect = new PHPConnect();
-                    String URL = "http://168.188.129.191/send_ble_data.php?id="+getMyID()+"&other_id="+tempID+"&rssi="+rs;
+                    String URL = "http://168.188.129.191/send_ble_data.php?my_id="+getMyID()+"&other_id="+tempID+"&rssi="+rs;
                     System.out.println("khjkhj - "+getMyID());
                     connect.execute(URL);
 

@@ -43,7 +43,7 @@ public class BleTestDataCollect {
         setMyID(myID);
         setTextView(datatxt);
         showScanning(datatxt);
-
+        System.out.println("ble test id:"+myID);
         myAdvertiser().advertising1(getMyID());
         myScanner().startScan(getMyID());
 

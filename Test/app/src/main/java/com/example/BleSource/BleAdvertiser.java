@@ -37,10 +37,11 @@ public class BleAdvertiser {
         adapter = BluetoothAdapter.getDefaultAdapter();
         advertiser = adapter.getBluetoothLeAdvertiser();
     }
+
     private void setData(String id){
 
         dataBuilder= new AdvertiseData.Builder();
-
+        System.out.println("khjkhj id"+id);
         //*****************************************************************************************************************
         dataBuilder.addServiceData(ParcelUuid.fromString(UUID_tempt), id.getBytes(Charset.forName("UTF-8")));
         //*****************************************************************************************************************
