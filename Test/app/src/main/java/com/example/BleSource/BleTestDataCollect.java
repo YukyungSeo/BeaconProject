@@ -52,30 +52,14 @@ public class BleTestDataCollect {
             public void run() {
                 myScanner().stopScan();
                 myAdvertiser().stopAdvertising();
-                //BleDataCollect(getTextView());
+                showResult(getTextView());
 
             }
-        }, 180000); //60000 == 1분
+        }, 660000); //60000 == 1분 18 6 36 = 36 24 = 60
     }
 
     public void showResult(TextView tv){    //MainActivity 에 BLE TEST 결과 출력
-        TextView bletxt = tv;
-
-        String[] temp= new String[PhoneSizeFromBleScanned];
-        int n=PhoneSizeFromBleScanned;
-        int ss=0;
-        if(n==0){
-        }
-        String txtView="BLE TEST FINISH - "+n+"개 스캔됨\n";
-        for(int i=0; i<n; i++) {
-            if (PhonesFromBleScanned[i] != null) {
-                temp[i] = "[ID:" + PhonesFromBleScanned[i].phoneID +"]";
-                txtView+=temp[i]+"\n";
-                ss=PhonesFromBleScanned[i].sigsize-15;
-                txtView+="ㄴ> RSSI 신호개수:"+ss+"\n";
-            }
-        }
-        tv.setText(txtView);
+        tv.setText("스캔 끝.");
     }
 
     public class phoneInfo{
