@@ -18,13 +18,15 @@ import android.util.Log;
 
 import androidx.fragment.app.FragmentActivity;
 
+import com.example.test.PHPConnect;
+
 import java.nio.charset.StandardCharsets;
 import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 
-public class BleScanner {
+public class BleScannnerForPHP {
 
     private final static String TAG="LOG --- ";
     private final static int REQUEST_ENABLE_BT= 1;
@@ -50,6 +52,7 @@ public class BleScanner {
     private String[] ids;
     Context thisContext=null;
     FragmentActivity thisFA;
+    String myid;
 
     public class INFO{
         String mac;
@@ -68,13 +71,13 @@ public class BleScanner {
         public INFO(String macc){
             this.mac=macc;
             this.sigSize=0;
-            this.rssi=new int[100];
-            this.txp=new int[100];
+            this.rssi=new int[1000];
+            this.txp=new int[1000];
 
 
         }
         public void stackSignal(int rssiw, int txpw){
-            if(sigSize<100) {
+            if(sigSize<1000) {
                 this.rssi[sigSize] = rssiw;
                 this.txp[sigSize] = txpw;
                 sigSize ++;
@@ -85,7 +88,7 @@ public class BleScanner {
     }
 
 
-    public BleScanner(BluetoothManager bm, Context ctx, FragmentActivity fa){
+    public BleScannnerForPHP(BluetoothManager bm, Context ctx, FragmentActivity fa){
 
         this.thisContext=ctx;
         this.thisFA=fa;
@@ -93,12 +96,17 @@ public class BleScanner {
         this.myResult= new HashMap<>();
         this.scdSize=0;
         this.ids=new String[100];
+        this.myid="TEST";
     }
     public void stopScan(){
         ble_scanner_.stopScan(scan_cb_);
         System.out.println(TAG+ " SCAN STOP");
     }
-    public void startScan() {
+    public String getMyID(){
+        return this.myid;
+    }
+    public void startScan(String mi) {
+        this.myid=mi;
 
         this.myResult.clear();
         this.scdSize=0;
@@ -113,16 +121,9 @@ public class BleScanner {
             return;
         }
         List<ScanFilter> filters = new ArrayList<>();
-        //Scan Filtering 이 동작 안 됨. 원인 불명.
-        /*
-        sfb=new ScanFilter.Builder();
-        byte[] mask=new byte[]{0x00};
-        sfb.setServiceData(ParcelUuid.fromString(UUID_tempt),mask,mask);
-        ScanFilter sf1=sfb.build();
-       filters.add(sf1);
-       */
         ScanSettings settings= new ScanSettings.Builder().setScanMode( ScanSettings.SCAN_MODE_LOW_POWER ).setScanMode(ScanSettings.SCAN_MODE_LOW_LATENCY).build();
         scan_results_= new HashMap<>();
+
         scan_cb_= new BLEScanCallback( scan_results_ );
         ble_scanner_ =BluetoothAdapter.getDefaultAdapter().getBluetoothLeScanner();
         ble_scanner_.startScan( filters, settings, scan_cb_ );
@@ -164,7 +165,7 @@ public class BleScanner {
            int yy=_result.getScanRecord().getTxPowerLevel();
            int tx=txLevelToPower(yy);
            String address= _result.getDevice().getAddress();
-            scan_results_.put(address,device);
+            //scan_results_.put(address,device);
             String tempID="NONE";
 
             //*****************************************************************************************************************
@@ -179,6 +180,19 @@ public class BleScanner {
                 System.out.println("SCANNED [ "+ address+" ]   Device Size - "+myResult.size());
                 if(myResult.containsKey(address)){
                     myResult.get(address).stackSignal(rs,tx);
+                    //서버로 보낼 ID = tempID
+                    //서버로 보낼 rssi = rs
+                    PHPConnect connect = new PHPConnect();
+                    String URL = "http://168.188.129.191/send_ble_data.php?my_id="+getMyID()+"&other_id="+tempID+"&rssi="+rs;
+                    connect.execute(URL);
+
+
+
+
+
+
+
+
                 }else{
 
                     ids[scdSize]=address;

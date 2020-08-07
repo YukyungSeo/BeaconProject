@@ -3,7 +3,6 @@ package com.example.test;
 import android.content.Intent;
 import android.os.Bundle;
 import android.os.Handler;
-import android.util.Log;
 import android.view.View;
 import android.widget.Button;
 import android.widget.TextView;
@@ -13,30 +12,31 @@ import androidx.appcompat.app.AppCompatActivity;
 
 import com.estimote.coresdk.common.requirements.SystemRequirementsChecker;
 import com.estimote.coresdk.observation.region.beacon.BeaconRegion;
-import com.estimote.coresdk.recognition.packets.Beacon;
 import com.estimote.coresdk.service.BeaconManager;
-import com.example.BleSource.BleTestDataCollect;
-import com.example.BleSource.BleTester;
+import com.example.BleSource.BleTester2;
 
-import java.util.List;
 import java.util.UUID;
-import java.util.concurrent.ExecutionException;
 
 //*** import for BLE
 //*** import for BLE
 //import for BLE ***//
 //import for BLE ***//
+
 public class MainActivity extends AppCompatActivity {
+
     TextView id_text;
     Button startButton;
+    Button secondB;
+    Button thirdB;
     TextView BLEDataText;
+
     //추가로 변수가 필요할 경우 단톡방에 꼭 말해주세요.
     //push 할때도 꼭 단톡방에 말해주세요.
 
     //추가 변수들 :
     BeaconManager beaconManager;
     BeaconRegion region;
-    BleTestDataCollect bleTester;
+    BleTester2 bleTester;
     String id;
     String[] results;
 
@@ -46,10 +46,13 @@ public class MainActivity extends AppCompatActivity {
         setContentView(R.layout.activity_main);
 
         startButton = (Button)findViewById(R.id.start_button);
+        secondB=(Button)findViewById(R.id.second_button);
+        thirdB=(Button) findViewById(R.id.third_button);
+
         BLEDataText = (TextView) findViewById(R.id.BLEDataText);
 
         // BleTester 객체 생성 :
-        bleTester=new BleTestDataCollect(this.getApplicationContext(), this);
+        bleTester=new BleTester2(this.getApplicationContext(), this);
 
         //수신 구역 설정 - 서버에서 받아와야함
         region = new BeaconRegion("ranged region",
@@ -64,6 +67,8 @@ public class MainActivity extends AppCompatActivity {
                 id_text= (TextView) findViewById(R.id.idInputText);  //입력받은 id 값
                 //1단계 부분입니다.
                 //time limit 설정
+
+                /*
                 Handler timer = new Handler(); //Handler 생성
                 timer.postDelayed(new Runnable(){ //2초후 쓰레드를 생성하는 postDelayed 메소드
                     public void run(){
@@ -94,13 +99,55 @@ public class MainActivity extends AppCompatActivity {
                     }
                 }));
 
+                 */
 
-                //2단계 부분입니다.
-                //Ble Test 시작 :
-                //안드로이드 9와 10 에서 실행 확인한 코드입니다.
-                id = id_text.getText().toString();
-                bleTester.BleStart(id,BLEDataText);
+
             }
+        });
+
+        secondB.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                id_text= (TextView) findViewById(R.id.idInputText);
+                id = id_text.getText().toString();
+               // bleTester.BleStart(id,BLEDataText);
+                bleTester.myAdvertiser().advertising1(id);
+                bleTester.setTextView(BLEDataText);
+                BLEDataText.setText("ble advertising start");
+                Handler timer = new Handler(); //Handler 생성
+                timer.postDelayed(new Runnable() { //2초후 쓰레드를 생성하는 postDelayed 메소드
+                    public void run() {
+
+                        bleTester.myAdvertiser().stopAdvertising();
+
+                    }
+                }, 10000);
+
+
+            }
+        });
+
+        thirdB.setOnClickListener(new View.OnClickListener(){
+            @Override
+            public void onClick(View v) {
+                id_text= (TextView) findViewById(R.id.idInputText);
+                id = id_text.getText().toString();
+                bleTester.myScanner().startScan(id);
+                bleTester.setTextView(BLEDataText);
+                BLEDataText.setText("ble SCAN start");
+
+                Handler timer = new Handler(); //Handler 생성
+                timer.postDelayed(new Runnable() { //2초후 쓰레드를 생성하는 postDelayed 메소드
+                    public void run() {
+                        bleTester.myScanner().stopScan();
+                        bleTester. showResult(bleTester.getTextView());
+
+                    }
+                }, 10000);
+
+
+            }
+
         });
 
 
