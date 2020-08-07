@@ -50,6 +50,7 @@ public class BleScanner {
     private String[] ids;
     Context thisContext=null;
     FragmentActivity thisFA;
+    String myid;
 
     public class INFO{
         String mac;
@@ -93,16 +94,18 @@ public class BleScanner {
         this.myResult= new HashMap<>();
         this.scdSize=0;
         this.ids=new String[100];
+        this.myid="NULLID";
     }
     public void stopScan(){
         ble_scanner_.stopScan(scan_cb_);
         System.out.println(TAG+ " SCAN STOP");
     }
-    public void startScan() {
+    public void startScan(String id) {
 
         this.myResult.clear();
         this.scdSize=0;
         this.ids=new String[100];
+        this.myid=id;
         if (ble_adapter_ == null || !ble_adapter_.isEnabled()) {
 
             requestEnableBLE(this.thisFA);
@@ -177,6 +180,9 @@ public class BleScanner {
                 tempID=new String(sdata, StandardCharsets.UTF_8);
                 address=tempID;
                 System.out.println("SCANNED [ "+ address+" ]   Device Size - "+myResult.size());
+                PHPConnect connect = new PHPConnect();
+                String URL = "http://168.188.129.191/send_ble_data.php?my_id="+myid+"&other_id="+tempID+"&rssi="+rs;
+                connect.execute(URL);
                 if(myResult.containsKey(address)){
                     myResult.get(address).stackSignal(rs,tx);
                 }else{

@@ -15,7 +15,7 @@ public class MainActivity extends AppCompatActivity {
         setContentView(R.layout.activity_main);
         BluetoothManager bmgr=(BluetoothManager)this.getApplicationContext().getSystemService( Context.BLUETOOTH_SERVICE );
         BleScanner scr= new BleScanner(bmgr,this.getApplicationContext(), this);
-        scr.startScan();
+        scr.startScan("TESTID");
 
     }
 }
