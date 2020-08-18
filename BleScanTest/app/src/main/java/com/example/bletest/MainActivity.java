@@ -4,11 +4,11 @@ import androidx.appcompat.app.AppCompatActivity;
 
 import android.bluetooth.BluetoothManager;
 import android.content.Context;
-import android.content.Intent;
 import android.os.Bundle;
 import android.os.Handler;
 import android.view.View;
 import android.widget.Button;
+import android.widget.EditText;
 import android.widget.TextView;
 
 public class MainActivity extends AppCompatActivity {
@@ -22,12 +22,18 @@ public class MainActivity extends AppCompatActivity {
     TextView tv;
     String MYID;
     boolean benchmark;
+    Button idsetButton;
+    EditText idinputText;
     @Override
     protected void onCreate(Bundle savedInstanceState) {
 
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_main);
-
+        //Set My ID//
+        //Set My ID//
+        MYID="hj";
+        //Set My ID//
+        //Set My ID//
         bmgr=(BluetoothManager)this.getApplicationContext().getSystemService( Context.BLUETOOTH_SERVICE );
         scr= new BleScanner(bmgr,this.getApplicationContext(), this);
         advr = new BleAdvertiser(this.getApplicationContext());
@@ -36,15 +42,21 @@ public class MainActivity extends AppCompatActivity {
         benchButton=(Button)findViewById(R.id.benchButton);
         nonbenchButton=(Button)findViewById(R.id.nonbenchButton);
         stopButton=(Button)findViewById(R.id.stopButton);
+        idinputText=(EditText)findViewById(R.id.idInputText);
+        idsetButton=(Button)findViewById(R.id.idsetButton);
         tv=(TextView)findViewById(R.id.textview1);
 
-        //Set My ID//
-        //Set My ID//
-        MYID="hj";
-        //Set My ID//
-        //Set My ID//
 
+
+        idinputText.setText(MYID);
         tv.setText("ID-"+MYID);
+        idsetButton.setOnClickListener(new View.OnClickListener(){
+            @Override
+            public void onClick(View v) {
+                MYID=idinputText.getText().toString();
+                tv.setText("ID-"+MYID);
+            }
+        });
 
         benchButton.setOnClickListener(new View.OnClickListener(){
             @Override

@@ -75,4 +75,36 @@
         app:layout_constraintTop_toTopOf="@+id/benchButton"
         app:layout_constraintVertical_bias="0.373" />
 
+    <EditText
+        android:id="@+id/idInputText"
+        android:layout_width="295dp"
+        android:layout_height="50dp"
+        android:layout_marginStart="20dp"
+
+        android:layout_marginTop="180dp"
+        android:layout_marginEnd="20dp"
+        android:layout_marginBottom="10dp"
+        app:layout_constraintBottom_toBottomOf="parent"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintHorizontal_bias="0.315"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toTopOf="@+id/benchButton"
+        app:layout_constraintVertical_bias="0.416" />
+
+    <Button
+        android:id="@+id/idsetButton"
+        android:layout_width="295dp"
+        android:layout_height="50dp"
+        android:layout_marginStart="20dp"
+        android:text="ID SET"
+        android:layout_marginTop="180dp"
+        android:layout_marginEnd="20dp"
+        android:layout_marginBottom="10dp"
+        app:layout_constraintBottom_toBottomOf="parent"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintHorizontal_bias="0.315"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toTopOf="@+id/benchButton"
+        app:layout_constraintVertical_bias="0.718" />
+
 </androidx.constraintlayout.widget.ConstraintLayout>
