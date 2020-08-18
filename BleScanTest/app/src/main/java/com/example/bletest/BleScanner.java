@@ -15,6 +15,7 @@ import android.content.Intent;
 import android.content.pm.PackageManager;
 import android.os.ParcelUuid;
 import android.util.Log;
+import android.widget.TextView;
 
 import androidx.fragment.app.FragmentActivity;
 
@@ -32,6 +33,7 @@ public class BleScanner {
     private BluetoothAdapter ble_adapter_;
     private boolean is_scanning_= false;
     public static String UUID_tempt ="CDB7950D-73F1-4D4D-8E47-C090502DBD63";
+    public static String UUID_benchmark="CDB7950D-73F1-4D4D-8E47-C090502DBD69";
     private Map<String, BluetoothDevice> scan_results_;
     public int scdSize;
     private HashMap<String, INFO> myResult;     // --> <ID,info>
@@ -51,10 +53,11 @@ public class BleScanner {
     Context thisContext=null;
     FragmentActivity thisFA;
     String myid;
+    boolean benchmark;
 
     public class INFO{
         String mac;
-
+        boolean bench;
         int sigSize;
         int[] rssi;
         int[] txp;
@@ -66,9 +69,10 @@ public class BleScanner {
             return this.rssi;
         }
         public int[] TX(){ return this.txp;}
-        public INFO(String macc){
+        public INFO(String macc,boolean bm){
             this.mac=macc;
             this.sigSize=0;
+            this.bench=bm;
             this.rssi=new int[100];
             this.txp=new int[100];
 
@@ -100,7 +104,8 @@ public class BleScanner {
         ble_scanner_.stopScan(scan_cb_);
         System.out.println(TAG+ " SCAN STOP");
     }
-    public void startScan(String id) {
+    public void startScan(String id,boolean bm) {
+        this.benchmark=bm;
 
         this.myResult.clear();
         this.scdSize=0;
@@ -115,6 +120,8 @@ public class BleScanner {
             requestLocationPermission(this.thisFA);
             return;
         }
+        scan_results_= new HashMap<>();
+        scan_cb_= new BLEScanCallback( scan_results_ );
         List<ScanFilter> filters = new ArrayList<>();
         //Scan Filtering 이 동작 안 됨. 원인 불명.
         /*
@@ -124,9 +131,7 @@ public class BleScanner {
         ScanFilter sf1=sfb.build();
        filters.add(sf1);
        */
-        ScanSettings settings= new ScanSettings.Builder().setScanMode( ScanSettings.SCAN_MODE_LOW_POWER ).setScanMode(ScanSettings.SCAN_MODE_LOW_LATENCY).build();
-        scan_results_= new HashMap<>();
-        scan_cb_= new BLEScanCallback( scan_results_ );
+        ScanSettings settings= new ScanSettings.Builder().setScanMode(ScanSettings.SCAN_MODE_LOW_LATENCY).build();
         ble_scanner_ =BluetoothAdapter.getDefaultAdapter().getBluetoothLeScanner();
         ble_scanner_.startScan( filters, settings, scan_cb_ );
         is_scanning_= true;
@@ -164,22 +169,22 @@ public class BleScanner {
             BluetoothDevice device = _result.getDevice();
 
             int rs=_result.getRssi();
-           int yy=_result.getScanRecord().getTxPowerLevel();
-           int tx=txLevelToPower(yy);
-           String address= _result.getDevice().getAddress();
-            scan_results_.put(address,device);
+            int yy=_result.getScanRecord().getTxPowerLevel();
+            int tx=txLevelToPower(yy);
+            String address= _result.getDevice().getAddress();
             String tempID="NONE";
+            //scan_results_.put(address,device);
 
             //*****************************************************************************************************************
             byte[] sdata;
 
             Map<ParcelUuid,byte[]> tempMap= _result.getScanRecord().getServiceData();
-            if(tempMap.containsKey(ParcelUuid.fromString(UUID_tempt))){
+            if(benchmark&&tempMap.containsKey(ParcelUuid.fromString(UUID_tempt))){
 
                 sdata=_result.getScanRecord().getServiceData().get(ParcelUuid.fromString(UUID_tempt));
                 tempID=new String(sdata, StandardCharsets.UTF_8);
                 address=tempID;
-                System.out.println("SCANNED [ "+ address+" ]   Device Size - "+myResult.size());
+                System.out.println("SCANNED [ "+ address+" - NONBENCH ]   Device Size - "+myResult.size());
                 PHPConnect connect = new PHPConnect();
                 String URL = "http://168.188.129.191/send_ble_data.php?my_id="+myid+"&other_id="+tempID+"&rssi="+rs;
                 connect.execute(URL);
@@ -188,11 +193,31 @@ public class BleScanner {
                 }else{
 
                     ids[scdSize]=address;
-                    INFO info= new INFO(address);
+                    INFO info= new INFO(address,false);
                     scdSize++;
                     info.stackSignal(rs,tx);
                     myResult.put(address,info);
                 }
+            }else if((!benchmark)&&tempMap.containsKey(ParcelUuid.fromString(UUID_benchmark))){
+
+                sdata=_result.getScanRecord().getServiceData().get(ParcelUuid.fromString(UUID_benchmark));
+                tempID=new String(sdata, StandardCharsets.UTF_8);
+                address=tempID;
+                System.out.println("SCANNED [ "+ address+" - BENCH ]   Device Size - "+myResult.size());
+                PHPConnect connect = new PHPConnect();
+                String URL = "http://168.188.129.191/send_ble_data.php?my_id="+myid+"&other_id="+tempID+"&rssi="+rs;
+                connect.execute(URL);
+                if(myResult.containsKey(address)){
+                    myResult.get(address).stackSignal(rs,tx);
+                }else{
+
+                    ids[scdSize]=address;
+                    INFO info= new INFO(address,true);
+                    scdSize++;
+                    info.stackSignal(rs,tx);
+                    myResult.put(address,info);
+                }
+
             }else{
                 System.out.println("SCANNED [ "+ address+" ]  - UNNASSASARY DEVICE ");
 
@@ -238,7 +263,33 @@ public class BleScanner {
         }
         return txPw;
     }
+    public void setResutText(TextView tv){
+        String temptxt="";
+        int n=this.scdSize;
+        String tempaddr="";
+        int tempsigsize=0;
+        String tempbenchtxt="";
+        if(benchmark){
+            temptxt+="END//MYID-"+myid+"/기준임\n";
+        }else{
+            temptxt+="END//MYID-"+myid+"/기준아님\n";
+        }
+        for(int i=0; i<n; i++){
+            tempaddr=myResult.get(this.ids()[i]).mac;
+            tempsigsize=myResult.get(this.ids()[i]).sigSize;
+            if(myResult.get(this.ids()[i]).bench){
+                tempbenchtxt="기준임";
+            }else{
+                tempbenchtxt="기준아님";
+            }
+            temptxt+="{ "+tempaddr+"/"+tempbenchtxt+"/"+tempsigsize+" } ,";
+        }
 
+
+
+        tv.setText(temptxt);
+
+    }
     private void requestEnableBLE(FragmentActivity thisfa) {
         Intent ble_enable_intent= new Intent( BluetoothAdapter.ACTION_REQUEST_ENABLE );
         thisfa.startActivityForResult( ble_enable_intent, REQUEST_ENABLE_BT );

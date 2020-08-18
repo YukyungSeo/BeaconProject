@@ -20,6 +20,7 @@ public class BleAdvertiser {
     Context thisContext;
 
     public static String UUID_tempt ="CDB7950D-73F1-4D4D-8E47-C090502DBD63";
+    public static String UUID_benchmark="CDB7950D-73F1-4D4D-8E47-C090502DBD69";
     BluetoothAdapter adapter;
     BluetoothLeAdvertiser advertiser;
     AdvertiseData.Builder dataBuilder;
@@ -49,6 +50,36 @@ public class BleAdvertiser {
         data = dataBuilder.build();
 
     }
+    private void setNonBenchData(String id){
+        dataBuilder= new AdvertiseData.Builder();
+
+
+        //*****************************************************************************************************************
+        dataBuilder.addServiceData(ParcelUuid.fromString(UUID_tempt), id.getBytes(Charset.forName("UTF-8")));
+        System.out.println("benchmark - build 1");
+        //*****************************************************************************************************************
+
+
+        dataBuilder.setIncludeTxPowerLevel(true);
+        data = dataBuilder.build();
+
+    }
+    private void setBenchData(String id){
+
+        dataBuilder= new AdvertiseData.Builder();
+
+
+        //*****************************************************************************************************************
+        dataBuilder.addServiceData(ParcelUuid.fromString(UUID_benchmark), id.getBytes(Charset.forName("UTF-8")));
+        System.out.println("benchmark - build 2");
+        //*****************************************************************************************************************
+
+
+
+        dataBuilder.setIncludeTxPowerLevel(true);
+        data = dataBuilder.build();
+
+    }
     private void settingAdvertising(){
         st = new AdvertiseSettings.Builder()
                 .setAdvertiseMode( AdvertiseSettings.ADVERTISE_MODE_LOW_LATENCY )
@@ -72,9 +103,13 @@ public class BleAdvertiser {
             super.onStartFailure(errorCode);
         }
     };
-    public void advertising1(String myphoneID) {   //user this function
+    public void advertising1(String myphoneID,boolean bm) {   //user this function
         this.setAdapter();
-        this.setData(myphoneID);
+        if(bm){
+            this.setBenchData(myphoneID);
+        }else{
+            this.setNonBenchData(myphoneID);
+        }
         this.settingAdvertising();
         this.startAdv();
 
@@ -82,5 +117,6 @@ public class BleAdvertiser {
     }
     public void stopAdvertising(){
         advertiser.stopAdvertising(advertisingCallback);
+
     }
 }

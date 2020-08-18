@@ -16,32 +16,76 @@ public class MainActivity extends AppCompatActivity {
     BleScanner scr;
     BleAdvertiser advr;
     Button firstButton;
+    Button benchButton;
+    Button nonbenchButton;
+    Button stopButton;
+    TextView tv;
+    String MYID;
+    boolean benchmark;
     @Override
     protected void onCreate(Bundle savedInstanceState) {
+
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_main);
+
         bmgr=(BluetoothManager)this.getApplicationContext().getSystemService( Context.BLUETOOTH_SERVICE );
         scr= new BleScanner(bmgr,this.getApplicationContext(), this);
         advr = new BleAdvertiser(this.getApplicationContext());
+        benchmark=false;
         firstButton = (Button)findViewById(R.id.firstButton);
+        benchButton=(Button)findViewById(R.id.benchButton);
+        nonbenchButton=(Button)findViewById(R.id.nonbenchButton);
+        stopButton=(Button)findViewById(R.id.stopButton);
+        tv=(TextView)findViewById(R.id.textview1);
 
+        //Set My ID//
+        //Set My ID//
+        MYID="hj";
+        //Set My ID//
+        //Set My ID//
+
+        tv.setText("ID-"+MYID);
+
+        benchButton.setOnClickListener(new View.OnClickListener(){
+            @Override
+            public void onClick(View v) {
+                benchmark=true;
+                tv.setText("기준임//ID-"+MYID);
+            }
+        });
+        nonbenchButton.setOnClickListener(new View.OnClickListener(){
+                                              @Override
+                                              public void onClick(View v) {
+                                                  benchmark=false;
+                                                  tv.setText("기준아님//ID-"+MYID);
+                                              }
+                                          }
+        );
 
         firstButton.setOnClickListener(new View.OnClickListener(){
             @Override
             public void onClick(View v) {
 
-                advr.advertising1("MYID");
-                scr.startScan("MYID");
-
+                advr.advertising1(MYID,benchmark);
+                scr.startScan(MYID,benchmark);
                 Handler timer = new Handler(); //Handler 생성
                 timer.postDelayed(new Runnable() { //2초후 쓰레드를 생성하는 postDelayed 메소드
                     public void run() {
                         advr.stopAdvertising();
                         scr.stopScan();
+                        scr.setResutText(tv);
 
                     }
-                }, 660000); //60000 == 1분 //660000 == 11분
+                }, 240000); //60000 == 1분 //660000 == 11분 //240000 == 4분
 
+            }
+        });
+        stopButton.setOnClickListener(new View.OnClickListener(){
+            @Override
+            public void onClick(View v) {
+                advr.stopAdvertising();
+                scr.stopScan();
+                scr.setResutText(tv);
             }
         });
 
