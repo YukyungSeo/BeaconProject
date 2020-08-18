@@ -31,7 +31,7 @@ public class BleScanner {
     private final static int REQUEST_ENABLE_BT= 1;
     private final static int REQUEST_FINE_LOCATION= 2;
     private BluetoothAdapter ble_adapter_;
-    private boolean is_scanning_= false;
+    public boolean is_scanning_= false;
     public static String UUID_tempt ="CDB7950D-73F1-4D4D-8E47-C090502DBD63";
     public static String UUID_benchmark="CDB7950D-73F1-4D4D-8E47-C090502DBD69";
     private Map<String, BluetoothDevice> scan_results_;
@@ -87,6 +87,11 @@ public class BleScanner {
                 Log.d(TAG, "SIGNAL STACK FULL");
             }
         }
+        public void sigSizeUp(){
+            if(sigSize<20000) {
+                sigSize++;
+            }
+        }
     }
 
 
@@ -101,8 +106,11 @@ public class BleScanner {
         this.myid="NULLID";
     }
     public void stopScan(){
-        ble_scanner_.stopScan(scan_cb_);
-        System.out.println(TAG+ " SCAN STOP");
+        if(this.is_scanning_) {
+            ble_scanner_.stopScan(scan_cb_);
+            this.is_scanning_ = false;
+            System.out.println(TAG + " SCAN STOP");
+        }
     }
     public void startScan(String id,boolean bm) {
         this.benchmark=bm;
@@ -189,13 +197,13 @@ public class BleScanner {
                 String URL = "http://168.188.129.191/send_ble_data.php?my_id="+myid+"&other_id="+tempID+"&rssi="+rs;
                 connect.execute(URL);
                 if(myResult.containsKey(address)){
-                    myResult.get(address).stackSignal(rs,tx);
+                    myResult.get(address).sigSizeUp();
                 }else{
 
                     ids[scdSize]=address;
                     INFO info= new INFO(address,false);
                     scdSize++;
-                    info.stackSignal(rs,tx);
+                    info.sigSizeUp();
                     myResult.put(address,info);
                 }
             }else if((!benchmark)&&tempMap.containsKey(ParcelUuid.fromString(UUID_benchmark))){
@@ -208,13 +216,13 @@ public class BleScanner {
                 String URL = "http://168.188.129.191/send_ble_data.php?my_id="+myid+"&other_id="+tempID+"&rssi="+rs;
                 connect.execute(URL);
                 if(myResult.containsKey(address)){
-                    myResult.get(address).stackSignal(rs,tx);
+                    myResult.get(address).sigSizeUp();
                 }else{
 
                     ids[scdSize]=address;
                     INFO info= new INFO(address,true);
                     scdSize++;
-                    info.stackSignal(rs,tx);
+                    info.sigSizeUp();
                     myResult.put(address,info);
                 }
 

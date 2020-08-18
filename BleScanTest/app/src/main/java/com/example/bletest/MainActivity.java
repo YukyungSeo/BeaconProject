@@ -4,6 +4,9 @@ import androidx.appcompat.app.AppCompatActivity;
 
 import android.bluetooth.BluetoothManager;
 import android.content.Context;
+import android.media.Ringtone;
+import android.media.RingtoneManager;
+import android.net.Uri;
 import android.os.Bundle;
 import android.os.Handler;
 import android.view.View;
@@ -49,7 +52,7 @@ public class MainActivity extends AppCompatActivity {
 
 
         idinputText.setText(MYID);
-        tv.setText("ID-"+MYID);
+        tv.setText("기준아님//ID-"+MYID);
         idsetButton.setOnClickListener(new View.OnClickListener(){
             @Override
             public void onClick(View v) {
@@ -80,12 +83,17 @@ public class MainActivity extends AppCompatActivity {
 
                 advr.advertising1(MYID,benchmark);
                 scr.startScan(MYID,benchmark);
+                tv.setText(tv.getText().toString()+" !START!");
                 Handler timer = new Handler(); //Handler 생성
                 timer.postDelayed(new Runnable() { //2초후 쓰레드를 생성하는 postDelayed 메소드
                     public void run() {
                         advr.stopAdvertising();
                         scr.stopScan();
                         scr.setResutText(tv);
+                        Uri notification = RingtoneManager.getDefaultUri(RingtoneManager.TYPE_NOTIFICATION);
+                        Ringtone ringtone=
+                                RingtoneManager.getRingtone(getApplicationContext(),notification);
+                        ringtone.play();
 
                     }
                 }, 240000); //60000 == 1분 //660000 == 11분 //240000 == 4분
@@ -98,6 +106,10 @@ public class MainActivity extends AppCompatActivity {
                 advr.stopAdvertising();
                 scr.stopScan();
                 scr.setResutText(tv);
+                Uri notification = RingtoneManager.getDefaultUri(RingtoneManager.TYPE_NOTIFICATION);
+                Ringtone ringtone=
+                        RingtoneManager.getRingtone(getApplicationContext(),notification);
+                ringtone.play();
             }
         });
 

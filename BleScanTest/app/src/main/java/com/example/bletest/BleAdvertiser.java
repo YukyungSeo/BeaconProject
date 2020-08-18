@@ -26,6 +26,7 @@ public class BleAdvertiser {
     AdvertiseData.Builder dataBuilder;
     AdvertiseData data;
     AdvertiseSettings st;
+    public boolean is_advertising_=false;
 
     public BleAdvertiser(Context tt){
         callManager(tt);
@@ -88,6 +89,7 @@ public class BleAdvertiser {
                 .build();
     }
     private void startAdv(){
+        is_advertising_=true;
         advertiser.startAdvertising(st,data,advertisingCallback);
     }
     AdvertiseCallback advertisingCallback = new AdvertiseCallback() {
@@ -116,7 +118,10 @@ public class BleAdvertiser {
 
     }
     public void stopAdvertising(){
-        advertiser.stopAdvertising(advertisingCallback);
+        if(this.is_advertising_) {
+            is_advertising_ = false;
+            advertiser.stopAdvertising(advertisingCallback);
+        }
 
     }
 }
