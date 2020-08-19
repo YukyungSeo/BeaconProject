@@ -50,6 +50,24 @@ public class MainActivity extends AppCompatActivity {
         idsetButton=(Button)findViewById(R.id.idsetButton);
         tv=(TextView)findViewById(R.id.textview1);
 
+        final Thread adThread;
+        final Thread scThread;
+
+        adThread = new Thread(new Runnable() {
+            @Override
+            public void run() {
+                advr.advertising1(MYID,benchmark);
+            }
+        });
+
+        scThread = new Thread(new Runnable() {
+            @Override
+            public void run() {
+                scr.startScan(MYID,benchmark);
+            }
+        });
+
+
         idinputText.setText(MYID);
         tv.setText("기준아님//ID-"+MYID);
         idsetButton.setOnClickListener(new View.OnClickListener(){
@@ -79,23 +97,6 @@ public class MainActivity extends AppCompatActivity {
         firstButton.setOnClickListener(new View.OnClickListener(){
             @Override
             public void onClick(View v) {
-                final Thread adThread;
-                final Thread scThread;
-
-                adThread = new Thread(new Runnable() {
-                    @Override
-                    public void run() {
-                        advr.advertising1(MYID,benchmark);
-                    }
-                });
-
-                scThread = new Thread(new Runnable() {
-                    @Override
-                    public void run() {
-                        scr.startScan(MYID,benchmark);
-                    }
-                });
-
                 firstButton.setEnabled(false);
                 if(adThread.isAlive()){
                     Toast.makeText(getApplicationContext(),"AD : 여기 오류인가요",Toast.LENGTH_SHORT).show();
@@ -124,12 +125,14 @@ public class MainActivity extends AppCompatActivity {
                         ringtone.play();
                         firstButton.setEnabled(true);
                     }
-                }, 5000); //60000 == 1분 //660000 == 11분 //240000 == 4분
+                }, 240000); //60000 == 1분 //660000 == 11분 //240000 == 4분
             }
         });
         stopButton.setOnClickListener(new View.OnClickListener(){
             @Override
             public void onClick(View v) {
+                adThread.interrupt();
+                scThread.interrupt();
                 advr.stopAdvertising();
                 scr.stopScan();
                 scr.setResutText(tv);
@@ -137,6 +140,7 @@ public class MainActivity extends AppCompatActivity {
                 Ringtone ringtone=
                         RingtoneManager.getRingtone(getApplicationContext(),notification);
                 ringtone.play();
+                firstButton.setEnabled(true);
             }
         });
 
