@@ -28,6 +28,8 @@ public class MainActivity extends AppCompatActivity {
     boolean benchmark;
     Button idsetButton;
     EditText idinputText;
+    Thread adThread;
+    Thread scThread;
     @Override
     protected void onCreate(Bundle savedInstanceState) {
 
@@ -49,24 +51,6 @@ public class MainActivity extends AppCompatActivity {
         idinputText=(EditText)findViewById(R.id.idInputText);
         idsetButton=(Button)findViewById(R.id.idsetButton);
         tv=(TextView)findViewById(R.id.textview1);
-
-        final Thread adThread;
-        final Thread scThread;
-
-        adThread = new Thread(new Runnable() {
-            @Override
-            public void run() {
-                advr.advertising1(MYID,benchmark);
-            }
-        });
-
-        scThread = new Thread(new Runnable() {
-            @Override
-            public void run() {
-                scr.startScan(MYID,benchmark);
-            }
-        });
-
 
         idinputText.setText(MYID);
         tv.setText("기준아님//ID-"+MYID);
@@ -95,9 +79,24 @@ public class MainActivity extends AppCompatActivity {
         );
 
         firstButton.setOnClickListener(new View.OnClickListener(){
+
             @Override
             public void onClick(View v) {
                 firstButton.setEnabled(false);
+                adThread = new Thread(new Runnable() {
+                    @Override
+                    public void run() {
+                        advr.advertising1(MYID,benchmark);
+                    }
+                });
+
+                scThread = new Thread(new Runnable() {
+                    @Override
+                    public void run() {
+                        scr.startScan(MYID,benchmark);
+                    }
+                });
+
                 if(adThread.isAlive()){
                     Toast.makeText(getApplicationContext(),"AD : 여기 오류인가요",Toast.LENGTH_SHORT).show();
                     return;
