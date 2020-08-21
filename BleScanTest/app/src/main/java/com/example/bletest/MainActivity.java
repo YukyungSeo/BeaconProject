@@ -28,8 +28,11 @@ public class MainActivity extends AppCompatActivity {
     boolean benchmark;
     Button idsetButton;
     EditText idinputText;
+    EditText timeEditText;
+    Button timeButton;
     Thread adThread;
     Thread scThread;
+    int Mtime;
     @Override
     protected void onCreate(Bundle savedInstanceState) {
 
@@ -50,6 +53,9 @@ public class MainActivity extends AppCompatActivity {
         stopButton=(Button)findViewById(R.id.stopButton);
         idinputText=(EditText)findViewById(R.id.idInputText);
         idsetButton=(Button)findViewById(R.id.idsetButton);
+        timeEditText = (EditText)findViewById(R.id.time_edit_text);
+        timeButton = (Button)findViewById(R.id.time_button);
+
         tv=(TextView)findViewById(R.id.textview1);
 
         idinputText.setText(MYID);
@@ -77,6 +83,16 @@ public class MainActivity extends AppCompatActivity {
                                               }
                                           }
         );
+
+        timeButton.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                int time = Integer.parseInt(timeEditText.getText().toString());
+                Mtime = time*1000;
+            }
+        });
+
+
 
         firstButton.setOnClickListener(new View.OnClickListener(){
 
@@ -115,6 +131,8 @@ public class MainActivity extends AppCompatActivity {
                     public void run() {
                         adThread.interrupt();
                         scThread.interrupt();
+                        adThread = null;
+                        scThread = null;
                         advr.stopAdvertising();
                         scr.stopScan();
                         scr.setResutText(tv);
@@ -124,7 +142,7 @@ public class MainActivity extends AppCompatActivity {
                         ringtone.play();
                         firstButton.setEnabled(true);
                     }
-                }, 240000); //60000 == 1분 //660000 == 11분 //240000 == 4분
+                }, Mtime); //60000 == 1분 //660000 == 11분 //240000 == 4분
             }
         });
         stopButton.setOnClickListener(new View.OnClickListener(){

@@ -218,7 +218,6 @@ public class BleScanner {
                 if(myResult.containsKey(address)){
                     myResult.get(address).sigSizeUp();
                 }else{
-
                     ids[scdSize]=address;
                     INFO info= new INFO(address,true);
                     scdSize++;
@@ -231,11 +230,6 @@ public class BleScanner {
 
             }
             //*****************************************************************************************************************
-
-
-
-
-
 
         }
     }
@@ -292,8 +286,6 @@ public class BleScanner {
             }
             temptxt+="{ "+tempaddr+"/"+tempbenchtxt+"/"+tempsigsize+" } ,";
         }
-
-
 
         tv.setText(temptxt);
 

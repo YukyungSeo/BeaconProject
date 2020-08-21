@@ -40,21 +40,15 @@ public class BleAdvertiser {
         advertiser = adapter.getBluetoothLeAdvertiser();
     }
     private void setData(String id){
-
         dataBuilder= new AdvertiseData.Builder();
-
         //*****************************************************************************************************************
         dataBuilder.addServiceData(ParcelUuid.fromString(UUID_tempt), id.getBytes(Charset.forName("UTF-8")));
         //*****************************************************************************************************************
-
         dataBuilder.setIncludeTxPowerLevel(true);
         data = dataBuilder.build();
-
     }
     private void setNonBenchData(String id){
         dataBuilder= new AdvertiseData.Builder();
-
-
         //*****************************************************************************************************************
         dataBuilder.addServiceData(ParcelUuid.fromString(UUID_tempt), id.getBytes(Charset.forName("UTF-8")));
         System.out.println("benchmark - build 1");
