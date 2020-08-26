@@ -15,6 +15,9 @@ import android.widget.EditText;
 import android.widget.TextView;
 import android.widget.Toast;
 
+import java.text.SimpleDateFormat;
+import java.util.Date;
+
 public class MainActivity extends AppCompatActivity {
     BluetoothManager bmgr;
     BleScanner scr;
@@ -33,6 +36,8 @@ public class MainActivity extends AppCompatActivity {
     Thread adThread;
     Thread scThread;
     int Mtime;
+    String sTime;
+    String eTime;
     @Override
     protected void onCreate(Bundle savedInstanceState) {
 
@@ -55,6 +60,8 @@ public class MainActivity extends AppCompatActivity {
         idsetButton=(Button)findViewById(R.id.idsetButton);
         timeEditText = (EditText)findViewById(R.id.time_edit_text);
         timeButton = (Button)findViewById(R.id.time_button);
+        sTime = "";
+        eTime = "";
 
         tv=(TextView)findViewById(R.id.textview1);
 
@@ -109,6 +116,10 @@ public class MainActivity extends AppCompatActivity {
                 scThread = new Thread(new Runnable() {
                     @Override
                     public void run() {
+                        long now = System.currentTimeMillis();
+                        Date mDate = new Date(now);
+                        SimpleDateFormat simpleDate = new SimpleDateFormat("hh:mm:ss");
+                        sTime = simpleDate.format(mDate);
                         scr.startScan(MYID,benchmark);
                     }
                 });
@@ -135,12 +146,23 @@ public class MainActivity extends AppCompatActivity {
                         scThread = null;
                         advr.stopAdvertising();
                         scr.stopScan();
+                        long now = System.currentTimeMillis();
+                        Date mDate = new Date(now);
+                        SimpleDateFormat simpleDate = new SimpleDateFormat("hh:mm:ss");
+                        eTime = simpleDate.format(mDate);
+                        if(benchmark){
+                            PHPConnect connect = new PHPConnect();
+                            String URL = "http://168.188.129.191/send_ble_benchmark_data.php?bm_id="+MYID+"&sTime="+sTime+"&eTime="+eTime;
+                            connect.execute(URL);
+                        }
                         scr.setResutText(tv);
                         Uri notification = RingtoneManager.getDefaultUri(RingtoneManager.TYPE_NOTIFICATION);
                         Ringtone ringtone=
                                 RingtoneManager.getRingtone(getApplicationContext(),notification);
                         ringtone.play();
                         firstButton.setEnabled(true);
+                        sTime = null;
+                        eTime = null;
                     }
                 }, Mtime); //60000 == 1분 //660000 == 11분 //240000 == 4분
             }

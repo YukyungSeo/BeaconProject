@@ -207,7 +207,6 @@ public class BleScanner {
                     myResult.put(address,info);
                 }
             }else if((!benchmark)&&tempMap.containsKey(ParcelUuid.fromString(UUID_benchmark))){
-
                 sdata=_result.getScanRecord().getServiceData().get(ParcelUuid.fromString(UUID_benchmark));
                 tempID=new String(sdata, StandardCharsets.UTF_8);
                 address=tempID;
