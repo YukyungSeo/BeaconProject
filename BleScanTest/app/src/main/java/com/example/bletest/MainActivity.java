@@ -129,7 +129,7 @@ public class MainActivity extends AppCompatActivity {
                     public void run() {
                         long now = System.currentTimeMillis();
                         Date mDate = new Date(now);
-                        SimpleDateFormat simpleDate = new SimpleDateFormat("hh:mm:ss");
+                        SimpleDateFormat simpleDate = new SimpleDateFormat("HH:mm:ss");
                         sTime = simpleDate.format(mDate);
                         scr.startScan(MYID,benchmark);
                     }
