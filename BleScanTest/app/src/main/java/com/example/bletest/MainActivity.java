@@ -33,11 +33,14 @@ public class MainActivity extends AppCompatActivity {
     EditText idinputText;
     EditText timeEditText;
     Button timeButton;
+    EditText distText;
+    Button distButton;
     Thread adThread;
     Thread scThread;
     int Mtime;
     String sTime;
     String eTime;
+    String distance;
     @Override
     protected void onCreate(Bundle savedInstanceState) {
 
@@ -60,6 +63,8 @@ public class MainActivity extends AppCompatActivity {
         idsetButton=(Button)findViewById(R.id.idsetButton);
         timeEditText = (EditText)findViewById(R.id.time_edit_text);
         timeButton = (Button)findViewById(R.id.time_button);
+        distText = (EditText)findViewById(R.id.distance_edit_text);
+        distButton = (Button)findViewById(R.id.distance_button);
         sTime = "";
         eTime = "";
 
@@ -99,6 +104,12 @@ public class MainActivity extends AppCompatActivity {
             }
         });
 
+        distButton.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                distance = distText.getText().toString();
+            }
+        });
 
 
         firstButton.setOnClickListener(new View.OnClickListener(){
@@ -152,7 +163,7 @@ public class MainActivity extends AppCompatActivity {
                         eTime = simpleDate.format(mDate);
                         if(benchmark){
                             PHPConnect connect = new PHPConnect();
-                            String URL = "http://168.188.129.191/send_ble_benchmark_data.php?bm_id="+MYID+"&sTime="+sTime+"&eTime="+eTime;
+                            String URL = "http://168.188.129.191/send_ble_benchmark_data.php?bm_id="+MYID+"&sTime="+sTime+"&eTime="+eTime+"&dist="+distance;
                             connect.execute(URL);
                         }
                         scr.setResutText(tv);

@@ -64,6 +64,30 @@
         app:layout_constraintTop_toTopOf="parent"
         app:layout_constraintVertical_bias="0.202" />
 
+    <TextView
+        android:id="@+id/textview1"
+        android:layout_width="339dp"
+        android:layout_height="143dp"
+        app:layout_constraintBottom_toBottomOf="parent"
+
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toTopOf="@+id/benchButton"
+        app:layout_constraintVertical_bias="0.166" />
+
+    <Button
+        android:id="@+id/time_button"
+        android:layout_width="293dp"
+        android:layout_height="49dp"
+        android:layout_marginBottom="88dp"
+        android:text="TIME SET"
+        app:layout_constraintBottom_toBottomOf="parent"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintHorizontal_bias="0.449"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toBottomOf="@+id/time_edit_text"
+        app:layout_constraintVertical_bias="0.0" />
+
     <EditText
         android:id="@+id/idInputText"
         android:layout_width="295dp"
@@ -76,48 +100,24 @@
         android:hint="ID"
         app:layout_constraintBottom_toBottomOf="parent"
         app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintHorizontal_bias="0.46"
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintTop_toTopOf="@+id/benchButton"
-        app:layout_constraintVertical_bias="0.175" />
-
-    <TextView
-        android:id="@+id/textview1"
-        android:layout_width="339dp"
-        android:layout_height="143dp"
-        app:layout_constraintBottom_toBottomOf="parent"
-
-        app:layout_constraintEnd_toEndOf="parent"
-        app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintTop_toTopOf="@+id/benchButton"
-        app:layout_constraintVertical_bias="0.166" />
+        app:layout_constraintVertical_bias="0.11" />
 
     <EditText
         android:id="@+id/time_edit_text"
-        android:layout_width="290dp"
-        android:layout_height="51dp"
+        android:layout_width="296dp"
+        android:layout_height="47dp"
         android:ems="10"
         android:hint="Time"
         android:inputType="textPersonName"
         app:layout_constraintBottom_toBottomOf="parent"
         app:layout_constraintEnd_toEndOf="parent"
-        app:layout_constraintHorizontal_bias="0.52"
+        app:layout_constraintHorizontal_bias="0.462"
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintTop_toBottomOf="@+id/idsetButton"
-        app:layout_constraintVertical_bias="0.135" />
-
-    <Button
-        android:id="@+id/time_button"
-        android:layout_width="293dp"
-        android:layout_height="49dp"
-        android:layout_marginTop="24dp"
-        android:layout_marginBottom="88dp"
-        android:text="TIME SET"
-        app:layout_constraintBottom_toBottomOf="parent"
-        app:layout_constraintEnd_toEndOf="parent"
-        app:layout_constraintHorizontal_bias="0.533"
-        app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintTop_toBottomOf="@+id/time_edit_text"
-        app:layout_constraintVertical_bias="0.14" />
+        app:layout_constraintVertical_bias="0.0" />
 
     <Button
         android:id="@+id/idsetButton"
@@ -130,8 +130,35 @@
         android:text="ID SET"
         app:layout_constraintBottom_toBottomOf="parent"
         app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintHorizontal_bias="0.46"
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintTop_toTopOf="@+id/benchButton"
-        app:layout_constraintVertical_bias="0.373" />
+        app:layout_constraintVertical_bias="0.252" />
+
+    <EditText
+        android:id="@+id/distance_edit_text"
+        android:layout_width="296dp"
+        android:layout_height="54dp"
+        android:ems="10"
+        android:hint="distance"
+        android:inputType="textPersonName"
+        app:layout_constraintBottom_toBottomOf="parent"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintHorizontal_bias="0.447"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toBottomOf="@+id/time_button"
+        app:layout_constraintVertical_bias="0.0" />
+
+    <Button
+        android:id="@+id/distance_button"
+        android:layout_width="291dp"
+        android:layout_height="50dp"
+        android:text="DISTANCE SET"
+        app:layout_constraintBottom_toBottomOf="parent"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintHorizontal_bias="0.458"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toBottomOf="@+id/distance_edit_text"
+        app:layout_constraintVertical_bias="0.0" />
 
 </androidx.constraintlayout.widget.ConstraintLayout>
