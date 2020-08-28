@@ -159,7 +159,7 @@ public class MainActivity extends AppCompatActivity {
                         scr.stopScan();
                         long now = System.currentTimeMillis();
                         Date mDate = new Date(now);
-                        SimpleDateFormat simpleDate = new SimpleDateFormat("hh:mm:ss");
+                        SimpleDateFormat simpleDate = new SimpleDateFormat("HH:mm:ss");
                         eTime = simpleDate.format(mDate);
                         if(benchmark){
                             PHPConnect connect = new PHPConnect();
