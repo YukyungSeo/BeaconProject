@@ -20,34 +20,22 @@ import java.util.UUID;
 import static com.estimote.coresdk.common.config.EstimoteSDK.getApplicationContext;
 
 public class BeaconScanActivity extends AppCompatActivity {
-    public static final int SIGNAL_LIMIT = 50;
-    public static final int BEACON_NUM = 4;
-
     private BeaconManager beaconManager;
     private BeaconRegion region;
 
     String id;
     String real_x;
     String real_y;
-
     Boolean status = false;
 
-    Beacon[] ConnectedBeacon;
     Beacon[] suitableBeacon;
-    double[][] BeaconsPackets = new double[BEACON_NUM][SIGNAL_LIMIT];
-
-    ArrayList<Double> selectedValues = new ArrayList<>();
 
     Info info;
 
-    int FLSize = 0;
-    int FMSize = 0;
-    int FRSize = 0;
-    int MLSize = 0;
-    int MRSize = 0;
-    int BLSize = 0;
-    int BMSize = 0;
-    int BRSize = 0;
+    final String LeftFrontBeacon = "[F6:E4:00:F5:00:29]";
+    final String RightFrontBeacon = "[F9:FB:14:46:7C:41]";
+    final String LeftBackBeacon = "[EB:6E:33:1D:98:21]";
+    final String RightBackBeacon = "[E2:D7:D0:CF:90:3E]";
 
     double n = 2;
 
@@ -70,15 +58,16 @@ public class BeaconScanActivity extends AppCompatActivity {
             public void run() {
                 stopScan();
                 System.out.println("END");
+                finish();
             }
-        },Integer.parseInt(info.getTime()));
+        },Integer.parseInt(info.getTime())*1000);
     }
 
     public void setting(){
 
         createSuitableBeacon();
 
-        beaconManager = new BeaconManager(getApplicationContext());
+        beaconManager = new BeaconManager(this);
 
         region = new BeaconRegion("ranged region",
                 UUID.fromString("B9407F30-F5F8-466E-AFF9-25556B57FE6D"),
@@ -95,7 +84,12 @@ public class BeaconScanActivity extends AppCompatActivity {
                         Log.d("AttendenceCheck","less than 3 beacons");
                         return;
                     }
-                    ConnectedBeacon = new Beacon[beacons.size()];
+
+                    System.out.println("********"+beacons.size()+"*******");
+                    for(int i=0;i<beacons.size();i++){
+                        System.out.println(beacons.get(i).getMacAddress());
+                    }
+                    System.out.println("***************");
 
                     //RSSI값이 제일 큰 애들 (절댓값을 취했을때 작은 값)을 구함
                     for(int i=0; i<beacons.size();i++){
@@ -134,8 +128,8 @@ public class BeaconScanActivity extends AppCompatActivity {
         String URL = "http://168.188.129.191/new_send_beacon_data.php?id="+id
                 +"&real_x="+real_x
                 +"&real_y="+real_y
-                +"&cal_x"+cal_x
-                +"&cal_y"+cal_y
+                +"&cal_x="+cal_x
+                +"&cal_y="+cal_y
                 +"&B1_MAC="+suitableBeacon[0].getMacAddress()+"&B1_RSSI="+suitableBeacon[0].getRssi()
                 +"&B2_MAC="+suitableBeacon[1].getMacAddress()+"&B2_RSSI="+suitableBeacon[1].getRssi()
                 +"&B3_MAC="+suitableBeacon[2].getMacAddress()+"&B3_RSSI="+suitableBeacon[2].getRssi();
@@ -146,11 +140,13 @@ public class BeaconScanActivity extends AppCompatActivity {
 
     private void selectMostShortestBeacons(Beacon beacon) {
         for(int i=0; i<3; i++){
-            if(suitableBeacon[i].equals(null)){
+            if(suitableBeacon[i]==null){
                 suitableBeacon[i] = beacon;
+                break;
             }
             if(beacon.getRssi()>suitableBeacon[i].getRssi()){
                 suitableBeacon[i] = beacon;
+                break;
             }
         }
     }
@@ -164,6 +160,12 @@ public class BeaconScanActivity extends AppCompatActivity {
     }
 
     public void startScan(){
+        beaconManager.connect(new BeaconManager.ServiceReadyCallback() {
+            @Override
+            public void onServiceReady() {
+                beaconManager.startRanging(region);
+            }
+        });
         status = true;
     }
 
@@ -193,23 +195,25 @@ public class BeaconScanActivity extends AppCompatActivity {
         double TXpower = beacon.getMeasuredPower();
         double rssi = beacon.getRssi();
 
+        System.out.println(beacon.getMacAddress().toString());
+
         switch (beacon.getMacAddress().toString()){
-            case "left front mac address":
+            case LeftFrontBeacon:
                 point2D.setX(0);
                 point2D.setY(0);
                 point2D.setDistance(Math.pow(10, ((TXpower-rssi)/(n*10))));
                 break;
-            case "right front mac address":
+            case RightFrontBeacon:
                 point2D.setX(0);
                 point2D.setY(9);
                 point2D.setDistance(Math.pow(10, ((TXpower-rssi)/(n*10))));
                 break;
-            case "left back mac address":
+            case LeftBackBeacon:
                 point2D.setX(9);
                 point2D.setY(0);
                 point2D.setDistance(Math.pow(10, ((TXpower-rssi)/(n*10))));
                 break;
-            case "right back mac address":
+            case RightBackBeacon:
                 point2D.setX(9);
                 point2D.setY(9);
                 point2D.setDistance(Math.pow(10, ((TXpower-rssi)/(n*10))));
