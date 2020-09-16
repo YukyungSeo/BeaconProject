@@ -120,7 +120,7 @@ public class BeaconScanActivity extends AppCompatActivity {
         //값이 어떻게 튀는지를 봐야 측정 가능할듯...
         System.out.println("측정된 x값 *****"+regionXY[0]);
         System.out.println("측정된 y값 *****"+regionXY[1]);
-        if(regionXY[0]>5 || regionXY[1]>5){
+        if(regionXY[0]>9 || regionXY[1]>9){
             return false;
         }
         return true;
