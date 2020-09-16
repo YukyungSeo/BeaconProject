@@ -32,10 +32,10 @@ public class BeaconScanActivity extends AppCompatActivity {
 
     Info info;
 
-    final String LeftFrontBeacon = "[F6:E4:00:F5:00:29]";
-    final String RightFrontBeacon = "[F9:FB:14:46:7C:41]";
-    final String LeftBackBeacon = "[EB:6E:33:1D:98:21]";
-    final String RightBackBeacon = "[E2:D7:D0:CF:90:3E]";
+    final String LeftFrontBeacon = "[E2:D7:D0:CF:90:3E]";   //분홍색
+    final String RightFrontBeacon = "[F0:34:3C:EF:45:80]"; //"[F6:E4:00:F5:00:29]";   //노란색
+    final String LeftBackBeacon = "[F0:BB:B4:1F:28:5A]";    //노란색
+    final String RightBackBeacon = "[F9:FB:14:46:7C:41]";  //보라색
 
     double n = 2;
 
@@ -53,11 +53,12 @@ public class BeaconScanActivity extends AppCompatActivity {
 
         Handler handler = new Handler();
         startScan();
+        Log.d("START", "scan start");
         handler.postDelayed(new Runnable() {
             @Override
             public void run() {
                 stopScan();
-                System.out.println("END");
+                Log.d("END", "scan stop");
                 finish();
             }
         },Integer.parseInt(info.getTime())*1000);
@@ -80,16 +81,15 @@ public class BeaconScanActivity extends AppCompatActivity {
                     return;
                 }
                 if(!beacons.isEmpty()){
-                    if(beacons.size()<3){
-                        Log.d("AttendenceCheck","less than 3 beacons");
-                        return;
-                    }
-
                     System.out.println("********"+beacons.size()+"*******");
                     for(int i=0;i<beacons.size();i++){
                         System.out.println(beacons.get(i).getMacAddress());
                     }
                     System.out.println("***************");
+                    if(beacons.size()<3) {
+                        Log.d("AttendenceCheck", "less than 3 beacons");
+                        return;
+                    }
 
                     //RSSI값이 제일 큰 애들 (절댓값을 취했을때 작은 값)을 구함
                     for(int i=0; i<beacons.size();i++){
@@ -144,6 +144,8 @@ public class BeaconScanActivity extends AppCompatActivity {
                 suitableBeacon[i] = beacon;
                 break;
             }
+        }
+        for(int i=0;i<3;i++){
             if(beacon.getRssi()>suitableBeacon[i].getRssi()){
                 suitableBeacon[i] = beacon;
                 break;
