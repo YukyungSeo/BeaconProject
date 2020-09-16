@@ -70,17 +70,6 @@ public class MainActivity extends AppCompatActivity {
                 setText();
                 Intent intent = new Intent(MainActivity.this, BeaconScanActivity.class);
                 startActivity(intent);
-//                beaconScan = new BeaconScan(id,real_x,real_y);
-//                Handler handler = new Handler();
-//                beaconScan.startScan();
-//                startButton.setEnabled(false);
-//                handler.postDelayed(new Runnable() {
-//                    @Override
-//                    public void run() {
-//                        beaconScan.stopScan();
-//                        startButton.setEnabled(true);
-//                    }
-//                },getTime());
             }
         });
 
@@ -90,14 +79,6 @@ public class MainActivity extends AppCompatActivity {
     protected void onDestroy() {
         super.onDestroy();
     }
-
-//    public void setBeacon(){
-//        //수신 구역 설정 - 서버에서 받아와야함
-//        region = new BeaconRegion("ranged region",
-//                UUID.fromString("B9407F30-F5F8-466E-AFF9-25556B57FE6D"),
-//                12313, 3040); // 본인이 연결할 beacon
-//        beaconManager = new BeaconManager(this);
-//    }
 
     public void setText(){
         idText = findViewById(R.id.edit_id_text);

@@ -78,11 +78,6 @@ public class BeaconScanActivity extends AppCompatActivity {
                     return;
                 }
                 if(!beacons.isEmpty()){
-                    System.out.println("********"+beacons.size()+"*******");
-                    for(int i=0;i<beacons.size();i++){
-                        System.out.println(beacons.get(i).getMacAddress());
-                    }
-                    System.out.println("***************");
                     if(beacons.size()<3) {
                         Log.d("AttendenceCheck", "less than 3 beacons");
                         return;
@@ -116,11 +111,12 @@ public class BeaconScanActivity extends AppCompatActivity {
     }
 
     private boolean exceptUnavailablePosition(int[] regionXY) {
-        //true면 정상 값, false면 비정상 값
-        //값이 어떻게 튀는지를 봐야 측정 가능할듯...
-        System.out.println("측정된 x값 *****"+regionXY[0]);
-        System.out.println("측정된 y값 *****"+regionXY[1]);
-        if(regionXY[0]>9 || regionXY[1]>9){
+        if(regionXY[0]<0 || regionXY[1]<0){
+            Log.d("음수로 튀는 값","x:"+regionXY[0]+" |  y:"+regionXY[1]);
+            return false;
+        }
+        if(regionXY[0]>=9 || regionXY[1]>=9){
+            Log.d("양수로 튀는 값","x:"+regionXY[0]+" |  y:"+regionXY[1]);
             return false;
         }
         return true;
