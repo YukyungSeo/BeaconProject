@@ -65,9 +65,6 @@ public class BeaconScanActivity extends AppCompatActivity {
     }
 
     public void setting(){
-
-        createSuitableBeacon();
-
         beaconManager = new BeaconManager(this);
 
         region = new BeaconRegion("ranged region",
@@ -92,6 +89,10 @@ public class BeaconScanActivity extends AppCompatActivity {
                     }
 
                     //RSSI값이 제일 큰 애들 (절댓값을 취했을때 작은 값)을 구함
+                    if(suitableBeacon!=null){
+                        deleteSuitableBeacon();
+                    }
+                    createSuitableBeacon();
                     for(int i=0; i<beacons.size();i++){
                         selectMostShortestBeacons(beacons.get(i));
                     }
@@ -119,6 +120,9 @@ public class BeaconScanActivity extends AppCompatActivity {
         //값이 어떻게 튀는지를 봐야 측정 가능할듯...
         System.out.println("측정된 x값 *****"+regionXY[0]);
         System.out.println("측정된 y값 *****"+regionXY[1]);
+        if(regionXY[0]>5 || regionXY[1]>5){
+            return false;
+        }
         return true;
     }
 
@@ -142,13 +146,13 @@ public class BeaconScanActivity extends AppCompatActivity {
         for(int i=0; i<3; i++){
             if(suitableBeacon[i]==null){
                 suitableBeacon[i] = beacon;
-                break;
+                return;
             }
         }
         for(int i=0;i<3;i++){
             if(beacon.getRssi()>suitableBeacon[i].getRssi()){
                 suitableBeacon[i] = beacon;
-                break;
+                return;
             }
         }
     }
