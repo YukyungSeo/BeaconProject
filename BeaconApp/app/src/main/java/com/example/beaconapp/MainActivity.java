@@ -95,10 +95,6 @@ public class MainActivity extends AppCompatActivity {
         info.setTime(Mtime);
     }
 
-    public int getTime(){
-        return Integer.parseInt(Mtime) * 1000;
-    }
-
     @Override
     public void onRequestPermissionsResult(int requestCode,
                                            String permissions[], int[] grantResults) {

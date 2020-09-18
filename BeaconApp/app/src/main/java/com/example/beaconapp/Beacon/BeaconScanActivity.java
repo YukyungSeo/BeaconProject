@@ -2,6 +2,7 @@ package com.example.beaconapp.Beacon;
 
 import androidx.appcompat.app.AppCompatActivity;
 
+import android.os.AsyncTask;
 import android.os.Bundle;
 import android.os.Handler;
 import android.util.Log;
@@ -11,7 +12,14 @@ import com.estimote.coresdk.recognition.packets.Beacon;
 import com.estimote.coresdk.service.BeaconManager;
 import com.example.beaconapp.R;
 import com.example.beaconapp.Server.PHPConnect;
+import com.lemmingapex.trilateration.NonLinearLeastSquaresSolver;
+import com.lemmingapex.trilateration.TrilaterationFunction;
 
+import org.apache.commons.math3.fitting.leastsquares.LeastSquaresOptimizer;
+import org.apache.commons.math3.fitting.leastsquares.LevenbergMarquardtOptimizer;
+
+import java.net.MalformedURLException;
+import java.net.URL;
 import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.List;
@@ -26,18 +34,23 @@ public class BeaconScanActivity extends AppCompatActivity {
     String id;
     String real_x;
     String real_y;
+    String cal_x;
+    String cal_y;
     Boolean status = false;
 
     Beacon[] suitableBeacon;
+    final int suitabaleBeaconSize=4;
 
     Info info;
 
-    final String LeftFrontBeacon = "[E2:D7:D0:CF:90:3E]";   //분홍색
+    final String LeftFrontBeacon = "[EB:6E:33:1D:98:21]" ;   //"[E2:D7:D0:CF:90:3E]";   //분홍색
     final String RightFrontBeacon = "[F0:34:3C:EF:45:80]"; //"[F6:E4:00:F5:00:29]";   //노란색
     final String LeftBackBeacon = "[F0:BB:B4:1F:28:5A]";    //노란색
     final String RightBackBeacon = "[F9:FB:14:46:7C:41]";  //보라색
 
     double n = 2;
+
+    Handler handler;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -51,8 +64,16 @@ public class BeaconScanActivity extends AppCompatActivity {
         this.real_y = info.getReal_y();
         setting();
 
-        Handler handler = new Handler();
-        startScan();
+        handler = new Handler();
+        Thread thread = new Thread(new Runnable() {
+            @Override
+            public void run() {
+                startScan();
+            }
+        });
+        thread.setDaemon(true); //Activity가 종료하면, 생성된 thread도 함께 종료되도록
+        thread.start();
+//        startScan();
         Log.d("START", "scan start");
         handler.postDelayed(new Runnable() {
             @Override
@@ -62,6 +83,7 @@ public class BeaconScanActivity extends AppCompatActivity {
                 finish();
             }
         },Integer.parseInt(info.getTime())*1000);
+
     }
 
     public void setting(){
@@ -78,7 +100,7 @@ public class BeaconScanActivity extends AppCompatActivity {
                     return;
                 }
                 if(!beacons.isEmpty()){
-                    if(beacons.size()<3) {
+                    if(beacons.size()<suitabaleBeaconSize) {
                         Log.d("AttendenceCheck", "less than 3 beacons");
                         return;
                     }
@@ -96,10 +118,10 @@ public class BeaconScanActivity extends AppCompatActivity {
                     //값을 계산해서 cal_x랑 cal_y에 삽입.
                     if(exceptUnavailablePosition(regionXY)){
                         //근데 cal_x랑 cal_y가 너무 튀면 보내지말고, 출력문 출력하자
-                        int cal_x = regionXY[0];
-                        int cal_y = regionXY[1];
+                        cal_x = String.valueOf(regionXY[1]);
+                        cal_y = String.valueOf(regionXY[0]);
                         //최종 값 뜨면 서버에 전송
-                        sendDataToServer(cal_x,cal_y);
+                        sendDataToServer();
                     }
 
                 } else {
@@ -111,41 +133,46 @@ public class BeaconScanActivity extends AppCompatActivity {
     }
 
     private boolean exceptUnavailablePosition(int[] regionXY) {
-        if(regionXY[0]<0 || regionXY[1]<0){
+        if(regionXY[0]<-3 || regionXY[1]<-3){
             Log.d("음수로 튀는 값","x:"+regionXY[0]+" |  y:"+regionXY[1]);
             return false;
         }
-        if(regionXY[0]>=9 || regionXY[1]>=9){
+        if(regionXY[0]>=12 || regionXY[1]>=12){
             Log.d("양수로 튀는 값","x:"+regionXY[0]+" |  y:"+regionXY[1]);
             return false;
         }
         return true;
     }
 
-    private void sendDataToServer(int cal_x, int cal_y) {
-        PHPConnect connect = new PHPConnect();
+    private void sendDataToServer() {
+        Thread thread = new Thread(new Runnable() {
+            @Override
+            public void run() {
+                PHPConnect connect = new PHPConnect();
 
-        String URL = "http://168.188.129.191/new_send_beacon_data.php?id="+id
-                +"&real_x="+real_x
-                +"&real_y="+real_y
-                +"&cal_x="+cal_x
-                +"&cal_y="+cal_y
-                +"&B1_MAC="+suitableBeacon[0].getMacAddress()+"&B1_RSSI="+suitableBeacon[0].getRssi()
-                +"&B2_MAC="+suitableBeacon[1].getMacAddress()+"&B2_RSSI="+suitableBeacon[1].getRssi()
-                +"&B3_MAC="+suitableBeacon[2].getMacAddress()+"&B3_RSSI="+suitableBeacon[2].getRssi();
-
-        connect.execute(URL);
+                String URL = "http://168.188.129.191/new_send_beacon_data.php?id="+id
+                        +"&real_x="+real_x
+                        +"&real_y="+real_y
+                        +"&cal_x="+cal_x
+                        +"&cal_y="+cal_y
+                        +"&B1_MAC="+suitableBeacon[0].getMacAddress()+"&B1_RSSI="+suitableBeacon[0].getRssi()
+                        +"&B2_MAC="+suitableBeacon[1].getMacAddress()+"&B2_RSSI="+suitableBeacon[1].getRssi()
+                        +"&B3_MAC="+suitableBeacon[2].getMacAddress()+"&B3_RSSI="+suitableBeacon[2].getRssi();
+                connect.execute(URL);
+            }
+        });
+        thread.start();
     }
 
 
     private void selectMostShortestBeacons(Beacon beacon) {
-        for(int i=0; i<3; i++){
+        for(int i=0; i<suitabaleBeaconSize; i++){
             if(suitableBeacon[i]==null){
                 suitableBeacon[i] = beacon;
                 return;
             }
         }
-        for(int i=0;i<3;i++){
+        for(int i=0;i<suitabaleBeaconSize;i++){
             if(beacon.getRssi()>suitableBeacon[i].getRssi()){
                 suitableBeacon[i] = beacon;
                 return;
@@ -154,7 +181,7 @@ public class BeaconScanActivity extends AppCompatActivity {
     }
 
     private void createSuitableBeacon(){
-        suitableBeacon = new Beacon[3];
+        suitableBeacon = new Beacon[suitabaleBeaconSize];
     }
 
     private void deleteSuitableBeacon(){
@@ -182,12 +209,33 @@ public class BeaconScanActivity extends AppCompatActivity {
         Point2D shortest1 = getPoint2D(suitableBeacon[0]);
         Point2D shortest2 = getPoint2D(suitableBeacon[1]);
         Point2D shortest3 = getPoint2D(suitableBeacon[2]);
+        Point2D shortest4 = getPoint2D(suitableBeacon[3]);
 
-        Point2D triPoint = Trilateration.getTrilateration(shortest1,shortest2,shortest3);
+        double[][] positions = new double[][] {
+                {shortest1.getX(),shortest1.getY()},
+                {shortest2.getX(),shortest2.getY()},
+                {shortest3.getX(),shortest3.getY()},
+                {shortest4.getX(),shortest4.getY()}};
 
-        int[] region = new int[2];
-        region[0] = (int) triPoint.getX();
-        region[1] = (int) triPoint.getY();
+        double[] distances = new double[] {
+                shortest1.getDistance(),
+                shortest2.getDistance(),
+                shortest3.getDistance(),
+                shortest4.getDistance()};
+
+        NonLinearLeastSquaresSolver solver = new NonLinearLeastSquaresSolver(new TrilaterationFunction(positions,distances), new LevenbergMarquardtOptimizer());
+        LeastSquaresOptimizer.Optimum optimum = solver.solve();
+
+//        Point2D triPoint = Trilateration.getTrilateration(shortest1,shortest2,shortest3);
+
+        double[] temp = optimum.getPoint().toArray();
+        int[] region = new int[temp.length];
+
+        for(int i=0; i<region.length;i++){
+            region[i] = (int) temp[i];
+        }
+
+        Log.d("region","x: "+region[1]+" y: "+region[0]);
 
         return region;
     }
@@ -196,8 +244,6 @@ public class BeaconScanActivity extends AppCompatActivity {
         Point2D point2D = new Point2D();
         double TXpower = beacon.getMeasuredPower();
         double rssi = beacon.getRssi();
-
-        System.out.println(beacon.getMacAddress().toString());
 
         switch (beacon.getMacAddress().toString()){
             case LeftFrontBeacon:
