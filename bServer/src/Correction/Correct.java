@@ -1,10 +1,9 @@
 package Correction;
 
 import java.util.ArrayList;
-import pack.MakeSpline;
-import pack.SplineGraph;
 
-import pack.MakeSpline;
+import bleDistance.MakeSpline;
+import bleDistance.SplineGraph;
 
 public class Correct {
     int sizeX;
@@ -61,7 +60,7 @@ public class Correct {
     }
 
     public double getDistance(Phone phoneSender, Phone phoneReceiver) {
-        // 채워야함
+        // 梨꾩썙�빞�븿
         double rssi = 0.;
         sp.checkIDandInsertX(phoneSender.getID(), phoneReceiver.getID(), rssi);
         return 0.;

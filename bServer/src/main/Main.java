@@ -1,7 +1,7 @@
 package main;
 import java.io.IOException;
 
-import pack.ComputeTester;
+import bleDistance.ComputeTester;
 
 public class Main {
 	

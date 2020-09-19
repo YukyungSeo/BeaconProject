@@ -5,6 +5,7 @@ import java.util.ArrayList;
 import Correction.Phone;
 public class ComputeBeaconTest {
 	ArrayList<Phone> phoneArr;
+	
 	public ComputeBeaconTest() {
 		this.phoneArr=null;
 	}

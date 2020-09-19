@@ -2,9 +2,10 @@ package Correction;
 
 import java.io.IOException;
 import beaconLocation.ComputeBeaconTest;
+import bleDistance.ComputeTester;
+
 import java.lang.reflect.Array;
 import java.util.ArrayList;
-import pack.ComputeTester;
 
 public class CorrectTest {
     static String TESTMODE_BENCHSET="benchsettest";
