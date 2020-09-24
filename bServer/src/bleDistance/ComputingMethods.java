@@ -50,6 +50,16 @@ package bleDistance;
 		 si.averageFrssi=computed;
 		 
 	 }
+	 public static void computeAverageRSSI(SIGINF si) {
+		 double computed=0;
+		 for(int p=0; p<si.rSize; p++) {
+			 computed+=si.getRssi()[p];
+			 
+		 }
+		 computed=computed/si.rSize;
+		 si.averageRssi=computed;
+		 
+	 }
 	 
 	// ***** frssi 평균값과 실제거리로 N값을 계산
 	 public static void computeN(SIGINF si, int realDist) {

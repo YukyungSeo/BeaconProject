@@ -35,8 +35,10 @@ public class SIGINF {	//.. Signal Information
 		averageFrssi=1;
 		
 	}
-	
-	int rSize;
+	public int fsize() {
+		return this.fSize;
+	}
+	public int rSize;
 	int fSize;
 	int count;
 	
@@ -51,6 +53,12 @@ public class SIGINF {	//.. Signal Information
 	double averageRssi;
 	double averageFrssi;
 	
+	public double getAveRssi() {
+		return this.averageRssi;
+	}
+	public double getAveFrssi() {
+		return this.averageFrssi;
+	}
 	public void setN(double n) {
 		this.findN=n;
 		
@@ -74,7 +82,7 @@ public class SIGINF {	//.. Signal Information
 	}
 	
 	public void stackRSSI(int rssi) {
-		if(count<12) {
+		if(count<30) {
 			count++;
 		}else {
 		if(rSize<4000) {
@@ -109,6 +117,9 @@ public class SIGINF {	//.. Signal Information
 	}
 	public double[] getFilteredRssi(){
 		return this.filteredRssi;
+	}
+	public int[] getRssi() {
+		return this.rssi;
 	}
 	public double getDistance() {
 		return this.distance;
