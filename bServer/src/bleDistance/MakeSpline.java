@@ -30,6 +30,10 @@ public class MakeSpline {
 			distenum=DISTANCE.dst_9m;
 		}else if(dist==7) {
 			distenum=DISTANCE.dst_7m;
+		}else if(dist==4) {
+			distenum=DISTANCE.dst_4m;
+		}else if(dist==8) {
+			distenum=DISTANCE.dst_8m;
 		}
 		return distenum;
 		
@@ -65,10 +69,8 @@ public class MakeSpline {
 	}
 	public double[] checkINDEXandInsertX(int ind, double x) {
 		if(this.splines[ind].getSplineX()==null) {
-			System.out.println("log - insert X error 0 ");
 			return new double[] {-1,-1};
 		}else {
-			System.out.println("X (checkINDEXandInsertX)="+x);
 		return this.splines[ind].insert(x);
 		}
 		
@@ -84,13 +86,11 @@ public class MakeSpline {
 		}
 		if(index>-1) {
 			if(this.splines[index].getSplineX()==null) {
-				System.out.println("log - insert X error 1 ");
 				return new double[] {-1,-1};
 			}else {
 			return this.splines[index].insert(x);
 			}
 		}else {
-			System.out.println("log - insert X error 2 ");
 			return new double[] {-1,-1};
 		}
 		

@@ -69,10 +69,7 @@ public class ComputeTester {
 				System.out.println("Log - spline : "+mSpline.size);
 				mSpline.makeSpline();
 				for(int k=0; k<mSpline.size; k++) {
-					System.out.println("================="+k+"==================");
-					System.out.println("spline id pair : "+mSpline.myids[k]+" "+mSpline.yourids[k]+" input X : "+mSpline.splines[k].distMap.size());
-					// X = rssi, Y = distance(m);
-					System.out.println("spline output (t=0.5)=" + mSpline.insertMiddleT(k));
+					System.out.println(k+dataConn.getPairs()[k].myid+" "+ dataConn.getPairs()[k].yourid+" "+mSpline.splines[k].insert(-90)[1]);
 				}
 				//---------------------------------------------------------
 				//*********************************************************
@@ -81,11 +78,9 @@ public class ComputeTester {
 			dataConn=null;
 			System.out.println("Log - bench test finish.");
 		}else if(TestMode.equals(TESTMODE_TXT)) {	//텍스트 파일에서 신호를 읽어서 테스트하는 모드
-			System.out.println("hellow world");
 			SIGINF temp= new SIGINF(); //신호 저장 객체
 			this.ReadFile(temp);//텍스트 파일 읽어와서 신호 객체에 저장
 			ComputingMethods.valueFilter(temp,2);		//저장된 신호 필터링
-			System.out.println("DISTANCE - "+temp.getDistance());	//필터 씌우고 계산한 distance값 출력
 		}
 	}
 	public void ReadFile(SIGINF sig) throws IOException {

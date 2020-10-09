@@ -74,7 +74,6 @@ public class DataRemoteConnector_BleBenchTestSet {	//º≠πˆ¿« µ•¿Ã≈Õ∫£¿ÃΩ∫ø° ¡¢±Ÿ«
             	  //System.out.println("sql:select3");
             	  if(testset_rs!=null) {
                       getData(testset_rs,map,sTime,eTime,bmid,rDist,date);
-                      System.out.println("DB - "+sTime+" // bench :"+bmid );
 
                       }
             	  

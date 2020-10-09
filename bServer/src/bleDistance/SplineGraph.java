@@ -64,6 +64,32 @@ public class SplineGraph {
 	  
 	  
   }
+  public void DataToSpline_beacon(double[] rssi, DISTANCE[] distance, int size) {
+	  double[] xx=new double[size];
+	  	double[] yy=new double[size];
+	  	int xsize=0;
+	  	System.out.println(size+"*****");
+	  	if(size>=2) {
+	  	for(int i=0; i<size; i++) {
+	  		
+	  		xx[xsize]=rssi[i];
+	  		yy[xsize]=enumToDist(distance[i]);
+	  		System.out.println(rssi[i]+"***"+yy[i]);
+	  		xsize++;
+	  		
+	  		
+	  	}
+	  	for(int i=0; i<xx.length; i++) {
+		  	System.out.println("before xx ("+i+"):"+xx[i]);
+		  	}
+	  	double[] yyy=this.sortAscendingOrderByX(xx, yy);
+	  	this.init(xx,yyy);
+	  	}else {
+	  		System.out.println("log - dist size too small.");
+	  	}
+	  
+	  
+  }
   
   public void MapDataToSpline(String mid, String yid) {
 	  	int distmapsize=this.distMap.size();
@@ -195,6 +221,10 @@ public class SplineGraph {
 		break;
 	  case dst_7m : dist=7.0;
 		break;
+	  case dst_4m : dist=4.0;
+		break;
+	  case dst_8m : dist=8.0;
+		break;
 		default : 
 		break;
 	  }
@@ -207,13 +237,11 @@ public class SplineGraph {
 	  double t=0.0;
 	  
 	  for(int i=0; i<initX.length; i++) {
-		  System.out.println("initX ("+i+"): "+initX[i]);
 	  }
 	  if(this.initX.length>=2) {
 	  if((this.initX[0]<this.initX[this.initX.length-1])&&x>=this.initX[0]&&x<=this.initX[this.initX.length-1]) {
 		  
 		  t=(x-this.initX[0])/(this.initX[this.initX.length-1]-this.initX[0]);
-		  System.out.println("t : "+t+" point[0]"+getPoint(t)[0]+"pioint[1]:"+getPoint(t)[1]);
 		  output[0]=this.getPoint(t)[0];
 	  output[1]=this.getPoint(t)[1];
 	  
@@ -379,7 +407,6 @@ public class SplineGraph {
    * @return the interpolated value
    */
   public double getValue(double x) {
-	  System.out.println("getvalue x= "+x);
     if (xx.length == 0) {
       return Double.NaN;
     }
@@ -394,21 +421,18 @@ public class SplineGraph {
 
     int index = Arrays.binarySearch(xx, x);
     if (index > 0) {
-    	System.out.println("getvalue yy= "+yy[index]);
       return yy[index];
     }
 
     index = - (index + 1) - 1;
     //TODO linear interpolation or extrapolation
     if (index < 0) {
-    	System.out.println("getvalue yy0= "+yy[0]);
       return yy[0];
     }
     double rt= a[index]
     	      + b[index] * (x - xx[index])
     	      + c[index] * Math.pow(x - xx[index], 2)
     	      + d[index] * Math.pow(x - xx[index], 3);
-    System.out.println("getvalue return final= "+rt);
     return rt;
   }
 
