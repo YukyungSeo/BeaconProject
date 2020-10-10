@@ -10,7 +10,9 @@ import com.estimote.coresdk.observation.region.beacon.BeaconRegion;
 import com.estimote.coresdk.recognition.packets.Beacon;
 import com.estimote.coresdk.service.BeaconManager;
 import com.example.beaconapp.R;
-import com.example.beaconapp.Server.PHPConnect;
+import com.example.beaconapp.Server.BeaconDTO;
+import com.example.beaconapp.Server.RetrofitClient;
+
 import java.util.List;
 import java.util.UUID;
 
@@ -102,15 +104,16 @@ public class BeaconScanActivity extends AppCompatActivity {
         Thread thread = new Thread(new Runnable() {
             @Override
             public void run() {
-                PHPConnect connect = new PHPConnect();
+                RetrofitClient retrofitClient = new RetrofitClient();
+                retrofitClient.init();
 
-                String URL = "http://168.188.129.191/new_send_beacon_data.php?"
-                        + "id=" + id
-                        + "&B1_MAC=" + arrangedBeacon[0].getMacAddress() + "&B1_RSSI=" + arrangedBeacon[0].getRssi()
-                        + "&B2_MAC=" + arrangedBeacon[1].getMacAddress() + "&B2_RSSI=" + arrangedBeacon[1].getRssi()
-                        + "&B3_MAC=" + arrangedBeacon[2].getMacAddress() + "&B3_RSSI=" + arrangedBeacon[2].getRssi()
-                        + "&B4_MAC=" + arrangedBeacon[3].getMacAddress() + "&B4_RSSI=" + arrangedBeacon[3].getRssi();
-                connect.execute(URL);
+                BeaconDTO beaconDTO = new BeaconDTO(id,
+                        arrangedBeacon[0].getMacAddress().toString(),String.valueOf(arrangedBeacon[0].getRssi()),
+                        arrangedBeacon[1].getMacAddress().toString(),String.valueOf(arrangedBeacon[1].getRssi()),
+                        arrangedBeacon[2].getMacAddress().toString(),String.valueOf(arrangedBeacon[2].getRssi()),
+                        arrangedBeacon[3].getMacAddress().toString(),String.valueOf(arrangedBeacon[3].getRssi()));
+
+                retrofitClient.SendBeaconsData(beaconDTO);
             }
         });
         thread.start();
