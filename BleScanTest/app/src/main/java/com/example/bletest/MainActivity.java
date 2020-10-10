@@ -15,6 +15,11 @@ import android.widget.EditText;
 import android.widget.TextView;
 import android.widget.Toast;
 
+import com.example.bletest.BLE.BleAdvertiser;
+import com.example.bletest.BLE.BleScanner;
+import com.example.bletest.Server.BleDTO;
+import com.example.bletest.Server.RetrofitClient;
+
 import java.text.SimpleDateFormat;
 import java.util.Date;
 
@@ -161,9 +166,10 @@ public class MainActivity extends AppCompatActivity{
                     SimpleDateFormat simpleDate = new SimpleDateFormat("HH:mm:ss");
                     eTime = simpleDate.format(mDate);
                     if(benchmark){
-                        PHPConnect connect = new PHPConnect();
-                        String URL = "http://168.188.129.191/send_ble_benchmark_data.php?bm_id="+MYID+"&sTime="+sTime+"&eTime="+eTime+"&dist="+distance;
-                        connect.execute(URL);
+                        RetrofitClient retrofitClient = new RetrofitClient();
+                        retrofitClient.init();
+                        BleDTO bleDTO = new BleDTO(myid,tempID,String.valueOf(rs),retrofitClient.getDate(),retrofitClient.getTime());
+                        retrofitClient.SendBLEs(bleDTO);
                     }
                     scr.setResutText(tv);
                     Uri notification = RingtoneManager.getDefaultUri(RingtoneManager.TYPE_NOTIFICATION);
