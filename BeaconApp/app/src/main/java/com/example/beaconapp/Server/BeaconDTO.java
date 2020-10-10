@@ -30,11 +30,17 @@ public class BeaconDTO {
     @SerializedName("B4_RSSI")
     private String B4_RSSI;
 
+    @SerializedName("mdate")
+    private String mDate;
+
+    @SerializedName("mTime")
+    private String mTime;
+
     public BeaconDTO(){
 
     }
 
-    public BeaconDTO(String id, String B1_MAC, String B1_RSSI, String B2_MAC, String B2_RSSI, String B3_MAC, String B3_RSSI, String B4_MAC, String B4_RSSI){
+    public BeaconDTO(String id, String B1_MAC, String B1_RSSI, String B2_MAC, String B2_RSSI, String B3_MAC, String B3_RSSI, String B4_MAC, String B4_RSSI,String mDate, String mTime){
         this.id = id;
         this.B1_MAC = B1_MAC;
         this.B1_RSSI = B1_RSSI;
@@ -44,6 +50,8 @@ public class BeaconDTO {
         this.B3_RSSI = B3_RSSI;
         this.B4_MAC = B4_MAC;
         this.B4_RSSI = B4_RSSI;
+        this.mDate = mDate;
+        this.mTime = mTime;
     }
 
     public String getId() {

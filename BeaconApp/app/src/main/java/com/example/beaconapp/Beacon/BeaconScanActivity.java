@@ -101,9 +101,6 @@ public class BeaconScanActivity extends AppCompatActivity {
     }
 
     private void sendDataToServer() {
-        Thread thread = new Thread(new Runnable() {
-            @Override
-            public void run() {
                 RetrofitClient retrofitClient = new RetrofitClient();
                 retrofitClient.init();
 
@@ -111,12 +108,11 @@ public class BeaconScanActivity extends AppCompatActivity {
                         arrangedBeacon[0].getMacAddress().toString(),String.valueOf(arrangedBeacon[0].getRssi()),
                         arrangedBeacon[1].getMacAddress().toString(),String.valueOf(arrangedBeacon[1].getRssi()),
                         arrangedBeacon[2].getMacAddress().toString(),String.valueOf(arrangedBeacon[2].getRssi()),
-                        arrangedBeacon[3].getMacAddress().toString(),String.valueOf(arrangedBeacon[3].getRssi()));
+                        arrangedBeacon[3].getMacAddress().toString(),String.valueOf(arrangedBeacon[3].getRssi()),
+                        retrofitClient.getDate(),retrofitClient.getTime());
 
                 retrofitClient.SendBeaconsData(beaconDTO);
-            }
-        });
-        thread.start();
+
     }
 
     private void deleteArrangedBeacon() {

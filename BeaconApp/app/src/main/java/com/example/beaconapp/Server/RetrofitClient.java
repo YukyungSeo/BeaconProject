@@ -50,4 +50,16 @@ public class RetrofitClient {
             }
         });
     }
+
+    public String getDate(){
+        Date date = new Date(System.currentTimeMillis());
+        SimpleDateFormat dateFormat = new SimpleDateFormat("yyyy-MM-dd");
+        return dateFormat.format(date);
+    }
+
+    public String getTime(){
+        Date date = new Date(System.currentTimeMillis());
+        SimpleDateFormat timeFormat = new SimpleDateFormat("HH:mm:ss");
+        return timeFormat.format(date);
+    }
 }
