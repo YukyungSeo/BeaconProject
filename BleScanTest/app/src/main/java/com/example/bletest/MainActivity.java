@@ -17,6 +17,7 @@ import android.widget.Toast;
 
 import com.example.bletest.BLE.BleAdvertiser;
 import com.example.bletest.BLE.BleScanner;
+import com.example.bletest.Server.BleBenchDTO;
 import com.example.bletest.Server.BleDTO;
 import com.example.bletest.Server.RetrofitClient;
 
@@ -168,8 +169,7 @@ public class MainActivity extends AppCompatActivity{
                     if(benchmark){
                         RetrofitClient retrofitClient = new RetrofitClient();
                         retrofitClient.init();
-                        BleDTO bleDTO = new BleDTO(myid,tempID,String.valueOf(rs),retrofitClient.getDate(),retrofitClient.getTime());
-                        retrofitClient.SendBLEs(bleDTO);
+                        retrofitClient.SendBLEBench(new BleBenchDTO(MYID,retrofitClient.getDate(),sTime,eTime));
                     }
                     scr.setResutText(tv);
                     Uri notification = RingtoneManager.getDefaultUri(RingtoneManager.TYPE_NOTIFICATION);

@@ -11,7 +11,7 @@ public interface RetrofitService {
     @POST("send_bleData.php/")
     Call<Void> sendBles(@Body BleDTO beaconData);
 
-    @POST()
+    @POST("send_bleBench.php/")
     Call<Void> sendBleBench(@Body BleBenchDTO bleBenchDTO);
 
 }

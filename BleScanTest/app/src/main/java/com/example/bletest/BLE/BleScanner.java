@@ -198,8 +198,7 @@ public class BleScanner {
 
                 RetrofitClient retrofitClient = new RetrofitClient();
                 retrofitClient.init();
-                BleDTO bleDTO = new BleDTO(myid,tempID,String.valueOf(rs),retrofitClient.getDate(),retrofitClient.getTime());
-                retrofitClient.SendBLEs(bleDTO);
+                retrofitClient.SendBLEs(new BleDTO(myid,tempID,String.valueOf(rs),retrofitClient.getDate(),retrofitClient.getTime()));
 
                 if(myResult.containsKey(address)){
                     myResult.get(address).sigSizeUp();

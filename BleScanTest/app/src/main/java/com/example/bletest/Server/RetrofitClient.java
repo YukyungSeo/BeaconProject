@@ -40,7 +40,23 @@ public class RetrofitClient {
             @Override
             public void onResponse(Call<Void> call, Response<Void> response) {
                 if(response.isSuccessful()){
-                    Log.d("success!","파일 전송 완료!");
+                    Log.d("success!","BLE 전송 완료!");
+                }
+            }
+
+            @Override
+            public void onFailure(Call<Void> call, Throwable t) {
+                Log.d("Fail!",t.toString());
+            }
+        });
+    }
+
+    public void SendBLEBench(BleBenchDTO bleBenchDTO){
+        retrofitservice.sendBleBench(bleBenchDTO).enqueue(new Callback<Void>() {
+            @Override
+            public void onResponse(Call<Void> call, Response<Void> response) {
+                if(response.isSuccessful()){
+                    Log.d("success!","BLE 벤치 전송 완료!");
                 }
             }
 
