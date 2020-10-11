@@ -11,10 +11,12 @@ import bleDistance.ComputeTester;
 public class Main {
 	static String TESTMODE_BENCHSET="benchsettest";
 	static String TESTMODE_TXT="txttest";
-	static boolean beaconSpline=true;
-	static boolean beaconLocation=true;
-	static boolean ble=true;
-	static boolean correction=false;
+	static boolean T=true;
+	static boolean F=false;
+	static boolean beaconSpline=F;
+	static boolean beaconLocation=T;
+	static boolean ble=F;
+	static boolean correction=F;
 	public static void main(String args[]) throws IOException, ClassNotFoundException {
 		
 		//
@@ -25,8 +27,11 @@ public class Main {
 		DataConnector_splineData spConn = new DataConnector_splineData();
 		DataRemoteConnector_sigdata sigConn = new DataRemoteConnector_sigdata();
 		if(beaconSpline) {
+			System.out.println("set raw data start");
 			spConn.setRawData();
+			System.out.println("make spline start");
 			spConn.makeSpline();
+			System.out.println("insert spline data start");
 			spConn.insertSplineData();
 		}
 		if(beaconLocation) {

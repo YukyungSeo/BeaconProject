@@ -56,7 +56,7 @@ public class DataRemoteConnector_sigdata {	//서버의 데이터베이스에 접근하여 데이
               Statement sts1 = con.createStatement();
               
               
-              String sql1="SELECT id, real_x, real_y, B1_MAC, B1_RSSI, B2_MAC, B2_RSSI, B3_MAC, B3_RSSI, B4_MAC, B4_RSSI FROM beacons";
+              String sql1="SELECT id, B1_MAC, B1_RSSI, B2_MAC, B2_RSSI, B3_MAC, B3_RSSI, B4_MAC, B4_RSSI FROM beacon_testset";
               
 
               
@@ -81,10 +81,10 @@ public class DataRemoteConnector_sigdata {	//서버의 데이터베이스에 접근하여 데이
          			//
      				beaconInfo[] bi= new beaconInfo[4];
      			
-     				bi[0]= new beaconInfo(b1,Integer.parseInt(r1));
-     				bi[1]=new beaconInfo(b2,Integer.parseInt(r2));
-     				bi[2]=new beaconInfo(b3,Integer.parseInt(r3));
-     				bi[3]=new beaconInfo(b4,Integer.parseInt(r4));
+     				bi[0]= new beaconInfo(mid,b1,Integer.parseInt(r1));
+     				bi[1]=new beaconInfo(mid,b2,Integer.parseInt(r2));
+     				bi[2]=new beaconInfo(mid,b3,Integer.parseInt(r3));
+     				bi[3]=new beaconInfo(mid,b4,Integer.parseInt(r4));
      				
      				
      				int n=0;
@@ -106,7 +106,7 @@ public class DataRemoteConnector_sigdata {	//서버의 데이터베이스에 접근하여 데이
      				}
          			
      				
-     				int[] yx= tri.getRegion(bi);
+     				int[] yx= tri.getRegion(bi,true);
      				int x= yx[1];
      				int y=yx[0];
          			if(ind==-1) {
@@ -132,7 +132,7 @@ public class DataRemoteConnector_sigdata {	//서버의 데이터베이스에 접근하여 데이
               
               }
               catch (SQLException s){
-              System.out.println("SQL statement is not executed!");
+              System.out.println("SQL statement is not executed! 222");
               }
               
 	}
