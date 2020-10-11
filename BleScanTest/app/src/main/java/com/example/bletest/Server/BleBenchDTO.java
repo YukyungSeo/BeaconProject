@@ -3,9 +3,9 @@ package com.example.bletest.Server;
 import com.google.gson.annotations.SerializedName;
 
 public class BleBenchDTO {
-    @SerializedName("setname")
+    @SerializedName("setName")
     String benchID;
-    @SerializedName("mdate")
+    @SerializedName("mDate")
     String mDate;
     @SerializedName("sTime")
     String sTime;

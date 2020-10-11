@@ -111,7 +111,7 @@ public class BeaconScanActivity extends AppCompatActivity {
                         arrangedBeacon[3].getMacAddress().toString(),String.valueOf(arrangedBeacon[3].getRssi()),
                         retrofitClient.getDate(),retrofitClient.getTime());
 
-                retrofitClient.SendBeaconsData(beaconDTO);
+                retrofitClient.SendBeacons(beaconDTO);
 
     }
 

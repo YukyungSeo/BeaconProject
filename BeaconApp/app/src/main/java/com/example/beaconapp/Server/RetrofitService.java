@@ -9,6 +9,6 @@ public interface RetrofitService {
     public static final String API_URL = "http://168.188.129.191/";
 
     @POST("send_beaconData.php/")
-    Call<Void> sendBeaconsData(@Body BeaconDTO beaconData);
+    Call<Void> sendBeacons(@Body BeaconDTO beaconDTO);
 
 }

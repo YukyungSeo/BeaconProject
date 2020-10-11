@@ -35,8 +35,8 @@ public class RetrofitClient {
         retrofitservice = retrofit.create(RetrofitService.class);
     }
 
-    public void SendBeaconsData(BeaconDTO beaconDTO){
-        retrofitservice.sendBeaconsData(beaconDTO).enqueue(new Callback<Void>() {
+    public void SendBeacons(BeaconDTO beaconDTO){
+        retrofitservice.sendBeacons(beaconDTO).enqueue(new Callback<Void>() {
             @Override
             public void onResponse(Call<Void> call, Response<Void> response) {
                 if(response.isSuccessful()){

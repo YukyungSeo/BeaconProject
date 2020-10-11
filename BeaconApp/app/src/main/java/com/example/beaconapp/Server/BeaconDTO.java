@@ -30,7 +30,7 @@ public class BeaconDTO {
     @SerializedName("B4_RSSI")
     private String B4_RSSI;
 
-    @SerializedName("mdate")
+    @SerializedName("mDate")
     private String mDate;
 
     @SerializedName("mTime")

@@ -12,7 +12,7 @@ public class BleDTO {
     @SerializedName("rssi")
     String RSSI;
 
-    @SerializedName("mdate")
+    @SerializedName("mDate")
     String mDate;
 
     @SerializedName("mTime")
