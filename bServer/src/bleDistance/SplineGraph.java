@@ -64,7 +64,7 @@ public class SplineGraph {
 	  
 	  
   }
-  public void DataToSpline_beacon(double[] rssi, DISTANCE[] distance, int size) {
+  public void DataToSpline_beacon(double[] rssi,double[] distance, int size) {
 	  double[] xx=new double[size];
 	  	double[] yy=new double[size];
 	  	int xsize=0;
@@ -73,7 +73,7 @@ public class SplineGraph {
 	  	for(int i=0; i<size; i++) {
 	  		
 	  		xx[xsize]=rssi[i];
-	  		yy[xsize]=enumToDist(distance[i]);
+	  		yy[xsize]=distance[i];
 	  		System.out.println(rssi[i]+"***"+yy[i]);
 	  		xsize++;
 	  		
