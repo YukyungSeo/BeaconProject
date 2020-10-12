@@ -1,9 +1,7 @@
 package Correction;
 
 import java.util.ArrayList;
-
-import bleDistance.MakeSpline;
-import bleDistance.SplineGraph;
+import pack.MakeSpline;
 
 public class Correct {
     int sizeX;
@@ -12,8 +10,8 @@ public class Correct {
     double LengthY;
     double ErrorRange;
     MakeSpline sp;
-
-    ArrayList<Phone> List = new ArrayList();
+    DBConnector dbConnector;
+    ArrayList<Phone> List;
 
     public Correct(int sizeX, int sizeY, double lengthX, double lengthY, ArrayList<Phone> list,MakeSpline ms) {
         this.sizeX = sizeX;
@@ -23,24 +21,25 @@ public class Correct {
         this.ErrorRange = this.LengthX / this.sizeX;
         this.List = list;
         this.sp=ms;
+        this.dbConnector = new DBConnector();
     }
 
-    public boolean run() {
+    public boolean run() throws ClassNotFoundException {
         boolean[] result = new boolean[4];
 
         for (int index = 0; index < List.size(); index++) {
-            result[index] = correction(List.get(index), index);
+            result[index] = correction(List.get(index));
         }
         return true;
     }
 
-    public boolean correction(Phone phone, int index) {
+    public boolean correction(Phone phone) throws ClassNotFoundException {
         int phoneX = phone.getX();
         int phoneY = phone.getY();
 
         int correctcount = 0;
 
-        for (int i = index; i < List.size(); i++) {
+        for (int i = 0; i < List.size(); i++) {
             Phone otherPhone = List.get(i);
             int otherPhoneX = otherPhone.getX();
             int otherPhoneY = otherPhone.getY();
@@ -59,10 +58,7 @@ public class Correct {
         return false;
     }
 
-    public double getDistance(Phone phoneSender, Phone phoneReceiver) {
-        // 梨꾩썙�빞�븿
-        double rssi = 0.;
-        sp.checkIDandInsertX(phoneSender.getID(), phoneReceiver.getID(), rssi);
-        return 0.;
+    public double getDistance(Phone phoneSender, Phone phoneReceiver) throws ClassNotFoundException {
+        return dbConnector.connectANDquery(phoneSender.getID(), phoneReceiver.getID());
     }
 }

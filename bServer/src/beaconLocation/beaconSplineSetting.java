@@ -7,7 +7,7 @@ public class beaconSplineSetting {
 	public String id;
 	public String mac;
 	double[] rssi;
-	DISTANCE[] distance;
+	double[] distance;
 	int[] rssisize;
 	int allsize;
 	SplineGraph splines;
@@ -17,11 +17,11 @@ public class beaconSplineSetting {
 		maked=false;
 		this.id=i;
 		this.mac=m;
-		this.rssisize=new int[10];
+		this.rssisize=new int[50];
 		this.allsize=0;
 		this.splines= new SplineGraph();
-		this.distance=new DISTANCE[10];
-		this.rssi=new double[10];
+		this.distance=new double[50];
+		this.rssi=new double[50];
 	}
 	public DISTANCE distToEnum(double dist) {
 		DISTANCE distenum=DISTANCE.dst_null;
@@ -48,10 +48,10 @@ public class beaconSplineSetting {
 		
 	}
 	
-	public void insertSIG(double rssi, int dist) {
+	public void insertSIG(double rssi, double dist) {
 		boolean findSameDist=false;
 		for(int i=0; i<this.allsize; i++) {
-			if(distance[i].equals(distToEnum(dist))) {
+			if(distance[i]==dist) {
 				i=this.allsize;
 				findSameDist=true;
 				this.rssi[i]=(this.rssi[i]+rssi)/(this.rssisize[i]+1);
@@ -60,7 +60,7 @@ public class beaconSplineSetting {
 			}
 		}
 		if(!findSameDist) {
-			distance[allsize]=distToEnum(dist);
+			distance[allsize]=dist;
 			this.rssi[allsize]=rssi;
 			this.rssisize[allsize]=1;
 			allsize++;
