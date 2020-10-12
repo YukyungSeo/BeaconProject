@@ -17,11 +17,11 @@ public class beaconSplineSetting {
 		maked=false;
 		this.id=i;
 		this.mac=m;
-		this.rssisize=new int[10];
+		this.rssisize=new int[50];
 		this.allsize=0;
 		this.splines= new SplineGraph();
-		this.distance=new double[10];
-		this.rssi=new double[10];
+		this.distance=new double[50];
+		this.rssi=new double[50];
 	}
 	public DISTANCE distToEnum(double dist) {
 		DISTANCE distenum=DISTANCE.dst_null;

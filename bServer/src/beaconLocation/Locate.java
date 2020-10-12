@@ -65,7 +65,7 @@ public class Locate {
 		//서버 DB의 데이터로부터 id와 distance 입력
 		
 		if(distx>=-this.padding&&disty>=-this.padding&&distx<this.padding+space&&disty<this.padding+space) {
-		
+		System.out.println(distanceSize+ "distx"+distx);
 		this.distanceX[distanceSize]=distx;
 		this.distanceY[distanceSize]=disty;
 		distanceSize++;
@@ -80,8 +80,9 @@ public class Locate {
 		
 		//distance To Location:
 		for(int i=0; i<this.distanceSize; i++) {
-			sumDistanceX+=this.distanceX[this.distanceSize];
-			sumDistanceY+=this.distanceY[this.distanceSize];
+			System.out.println("setfinallocate distance"+this.distanceX[i]+" "+this.distanceY[i]);
+			sumDistanceX+=this.distanceX[i];
+			sumDistanceY+=this.distanceY[i];
 		}
 		double finalDistanceX=sumDistanceX/this.distanceSize;
 

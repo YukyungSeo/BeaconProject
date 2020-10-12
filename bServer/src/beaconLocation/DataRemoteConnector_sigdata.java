@@ -65,8 +65,12 @@ public class DataRemoteConnector_sigdata {	//서버의 데이터베이스에 접근하여 데이
             	 
             	 while (rsb.next()) {
             		 
-            				 
+            				
          			String mid =rsb.getString("id");
+         			
+         			if(mid.equals("gal")) {
+         				System.out.println(mid);
+         				
          			String b1= rsb.getString("B1_MAC");
          			String r1= rsb.getString("B1_RSSI");
          			String b2= rsb.getString("B2_MAC");
@@ -109,6 +113,9 @@ public class DataRemoteConnector_sigdata {	//서버의 데이터베이스에 접근하여 데이
      				int[] yx= tri.getRegion(bi,true);
      				int x= yx[1];
      				int y=yx[0];
+     				System.out.println("xxxxx"+x);
+     				System.out.println("yyyyy"+y);
+     				
          			if(ind==-1) {
          				this.mids[midSize]=new IDandDIST(mid);
          				lct[midSize]= new Locate(mid);
@@ -124,6 +131,7 @@ public class DataRemoteConnector_sigdata {	//서버의 데이터베이스에 접근하여 데이
          			
          			
                  }
+            	 }
             	 }
                       }
             	  
@@ -165,9 +173,11 @@ public class DataRemoteConnector_sigdata {	//서버의 데이터베이스에 접근하여 데이
  
             try{
           	  for(int y=0; y<midSize; y++) {
+          		System.out.println("insertFinal"+y);
           		  String sql1="INSERT INTO beacon_location (id,x,y) VALUES (?,?,?)";
           		  PreparedStatement  sts1 = (PreparedStatement) con.prepareStatement(sql1);
-          		  sts1.setString(1,lct[y].myid);sts1.setString(2,Integer.toString(lct[y].finalLocateX));
+          		  sts1.setString(1,lct[y].myid);
+          		  sts1.setString(2,Integer.toString(lct[y].finalLocateX));
           		  sts1.setString(3,Integer.toString(lct[y].finalLocateY));
             sts1.executeUpdate();
 
