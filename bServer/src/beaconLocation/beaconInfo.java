@@ -13,4 +13,6 @@ public class beaconInfo {
 	public void setdistanceBySpline(double s) {
 		this.distanceBySpline=s;
 	}
+	public double getDistanceBySpline(){return this.distanceBySpline; }
+	public String getMac(){return this.mac;}
 }

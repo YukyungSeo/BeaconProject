@@ -11,7 +11,7 @@ import com.mysql.jdbc.PreparedStatement;
 
 import Correction.Phone;
 
-public class DataRemoteConnector_sigdata {	//¼­¹öÀÇ µ¥ÀÌÅÍº£ÀÌ½º¿¡ Á¢±ÙÇÏ¿© µ¥ÀÌÅÍ ºÒ·¯¿À°í °´Ã¼¿¡ ÀúÀå
+public class DataRemoteConnector_sigdata {	//ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ ï¿½ï¿½ï¿½ï¿½ï¿½Íºï¿½ï¿½Ì½ï¿½ï¿½ï¿½ ï¿½ï¿½ï¿½ï¿½ï¿½Ï¿ï¿½ ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ ï¿½Ò·ï¿½ï¿½ï¿½ï¿½ï¿½ ï¿½ï¿½Ã¼ï¿½ï¿½ ï¿½ï¿½ï¿½ï¿½
     String driver = "com.mysql.jdbc.Driver";
     String url = "jdbc:mysql://168.188.129.191:3306/ACUB?autoReconnect=true&useSSL=false";
    
@@ -110,9 +110,9 @@ public class DataRemoteConnector_sigdata {	//¼­¹öÀÇ µ¥ÀÌÅÍº£ÀÌ½º¿¡ Á¢±ÙÇÏ¿© µ¥ÀÌ
      				}
          			
      				
-     				int[] yx= tri.getRegion(bi,true);
-     				int x= yx[1];
-     				int y=yx[0];
+     				double[] yx= tri.getRegion(bi,true);
+     				double x= yx[1];
+     				double y=yx[0];
      				System.out.println("xxxxx"+x);
      				System.out.println("yyyyy"+y);
      				
