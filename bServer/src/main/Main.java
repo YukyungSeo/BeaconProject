@@ -57,7 +57,7 @@ public class Main {
 		//
 		Correct correct;
 		if(correction) {
-			correct = new Correct(2, 2, 9, 9, fillList(),tester.getMSpline());
+			correct = new Correct(2, 2, 9, 9, fillList());
 			correct.run();
 		}
 		

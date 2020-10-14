@@ -1,7 +1,6 @@
 package Correction;
 
 import java.util.ArrayList;
-import pack.MakeSpline;
 
 public class Correct {
     int sizeX;
@@ -9,18 +8,16 @@ public class Correct {
     double LengthX;
     double LengthY;
     double ErrorRange;
-    MakeSpline sp;
     DBConnector dbConnector;
     ArrayList<Phone> List;
 
-    public Correct(int sizeX, int sizeY, double lengthX, double lengthY, ArrayList<Phone> list,MakeSpline ms) {
+    public Correct(int sizeX, int sizeY, double lengthX, double lengthY, ArrayList<Phone> list) {
         this.sizeX = sizeX;
         this.sizeY = sizeY;
         this.LengthX = lengthX;
         this.LengthY = lengthY;
         this.ErrorRange = this.LengthX / this.sizeX;
         this.List = list;
-        this.sp=ms;
         this.dbConnector = new DBConnector();
     }
 

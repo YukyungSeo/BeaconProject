@@ -84,6 +84,9 @@ public class BeaconScanActivity extends AppCompatActivity {
                 if (!beacons.isEmpty()) {
                     if (beacons.size() < beaconSize) {
                         Log.d("AttendenceCheck", "less than 3 beacons");
+                        for(int i=0; i<beacons.size(); i++) {
+                            Log.d("AttanceCheck", beacons.get(i).getMacAddress() + "");
+                        }
                         return;
                     }
                     // beacon 정렬
