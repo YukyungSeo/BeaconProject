@@ -53,7 +53,7 @@ public class MainActivity extends AppCompatActivity{
     setContentView(R.layout.activity_main);
     //Set My ID//
     //Set My ID//
-    MYID="hj";
+    MYID="gal02";
     //Set My ID//
     //Set My ID//
     bmgr=(BluetoothManager)this.getApplicationContext().getSystemService( Context.BLUETOOTH_SERVICE );
@@ -72,6 +72,10 @@ public class MainActivity extends AppCompatActivity{
     distButton = (Button)findViewById(R.id.distance_button);
     sTime = "";
     eTime = "";
+    Mtime=120000;
+        timeEditText.setText(String.valueOf(Mtime/1000));
+        distance="TEST";
+        distText.setText(distance);
 
     tv=(TextView)findViewById(R.id.textview1);
 
@@ -167,9 +171,13 @@ public class MainActivity extends AppCompatActivity{
                     SimpleDateFormat simpleDate = new SimpleDateFormat("HH:mm:ss");
                     eTime = simpleDate.format(mDate);
                     if(benchmark){
-                        RetrofitClient retrofitClient = new RetrofitClient();
-                        retrofitClient.init();
-                        retrofitClient.SendBLEBench(new BleBenchDTO(MYID,retrofitClient.getDate(),sTime,eTime));
+                            System.out.println("bench retrofit 2");
+                            RetrofitClient retrofitClient = new RetrofitClient();
+                            retrofitClient.init();
+                            retrofitClient.SendBLEBench(new BleBenchDTO(distance, retrofitClient.getDate(), sTime, eTime));
+
+                    }else{
+                        System.out.println("bench retrofit 4");
                     }
                     scr.setResutText(tv);
                     Uri notification = RingtoneManager.getDefaultUri(RingtoneManager.TYPE_NOTIFICATION);
@@ -188,14 +196,32 @@ public class MainActivity extends AppCompatActivity{
         public void onClick(View v) {
             adThread.interrupt();
             scThread.interrupt();
+            adThread = null;
+            scThread = null;
             advr.stopAdvertising();
             scr.stopScan();
+            long now = System.currentTimeMillis();
+            Date mDate = new Date(now);
+            SimpleDateFormat simpleDate = new SimpleDateFormat("HH:mm:ss");
+            eTime = simpleDate.format(mDate);
+            if(benchmark){
+
+                    System.out.println("bench retrofit 2");
+                    RetrofitClient retrofitClient = new RetrofitClient();
+                    retrofitClient.init();
+                    retrofitClient.SendBLEBench(new BleBenchDTO(distance, retrofitClient.getDate(), sTime, eTime));
+
+            }else{
+                System.out.println("bench retrofit 4");
+            }
             scr.setResutText(tv);
             Uri notification = RingtoneManager.getDefaultUri(RingtoneManager.TYPE_NOTIFICATION);
             Ringtone ringtone=
                     RingtoneManager.getRingtone(getApplicationContext(),notification);
             ringtone.play();
             firstButton.setEnabled(true);
+            sTime = null;
+            eTime = null;
         }
     });
 
