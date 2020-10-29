@@ -17,7 +17,40 @@ import retrofit2.converter.gson.GsonConverterFactory;
 public class RetrofitClient {
     private Retrofit retrofit;
     private RetrofitService retrofitservice;
+    private BenchRtrf benchservice;
 
+    public void sendBench(benchDTO bDTO){
+
+        benchservice.sendBench(bDTO).enqueue(new Callback<Void>() {
+            @Override
+            public void onResponse(Call<Void> call, Response<Void> response) {
+                if(response.isSuccessful()){
+                    Log.d("success!","bench 전송 완료!");
+                }
+            }
+
+            @Override
+            public void onFailure(Call<Void> call, Throwable t) {
+                Log.d("Fail!",t.toString());
+            }
+        });
+
+    }
+    public void init2(){
+        Gson gson = new GsonBuilder()
+                .setLenient()
+                .create();
+
+        OkHttpClient okHttpClient = new OkHttpClient.Builder().build();
+
+        retrofit = new Retrofit.Builder()
+                .baseUrl(benchservice.API_URL)
+                .client(okHttpClient)
+                .addConverterFactory(GsonConverterFactory.create(gson))
+                .build();
+
+        benchservice = retrofit.create(BenchRtrf.class);
+    }
 
     public void init(){
         Gson gson = new GsonBuilder()
@@ -51,13 +84,13 @@ public class RetrofitClient {
         });
     }
 
-    public String getDate(){
+    public static String getDate(){
         Date date = new Date(System.currentTimeMillis());
         SimpleDateFormat dateFormat = new SimpleDateFormat("yyyy-MM-dd");
         return dateFormat.format(date);
     }
 
-    public String getTime(){
+    public static String getTime(){
         Date date = new Date(System.currentTimeMillis());
         SimpleDateFormat timeFormat = new SimpleDateFormat("HH:mm:ss");
         return timeFormat.format(date);

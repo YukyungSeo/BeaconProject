@@ -11,6 +11,7 @@ import com.estimote.coresdk.recognition.packets.Beacon;
 import com.estimote.coresdk.service.BeaconManager;
 import com.example.beaconapp.R;
 import com.example.beaconapp.Server.BeaconDTO;
+import com.example.beaconapp.Server.benchDTO;
 import com.example.beaconapp.Server.RetrofitClient;
 
 import java.util.List;
@@ -21,6 +22,10 @@ public class BeaconScanActivity extends AppCompatActivity {
     private BeaconRegion region;
 
     String id;
+    String setname;
+    String mdate;
+    String stime;
+    String etime;
     Boolean status = false;
 
     Beacon[] arrangedBeacon;
@@ -43,6 +48,7 @@ public class BeaconScanActivity extends AppCompatActivity {
         info = Info.getInstance();
 
         this.id = info.getId();
+        this.setname=info.setName;
         setting();
 
         handler = new Handler();
@@ -50,6 +56,7 @@ public class BeaconScanActivity extends AppCompatActivity {
             @Override
             public void run() {
                 startScan();
+                stime= RetrofitClient.getTime();
             }
         });
         thread.setDaemon(true); //Activity가 종료하면, 생성된 thread도 함께 종료되도록
@@ -61,6 +68,10 @@ public class BeaconScanActivity extends AppCompatActivity {
             public void run() {
                 stopScan();
                 Log.d("END", "scan stop");
+                etime= RetrofitClient.getTime();
+                mdate=RetrofitClient.getDate();
+                sendBenchToServer();
+
                 finish();
             }
         }, Integer.parseInt(info.getTime()) * 1000);
@@ -78,16 +89,23 @@ public class BeaconScanActivity extends AppCompatActivity {
         beaconManager.setRangingListener((new BeaconManager.BeaconRangingListener() {
             @Override
             public void onBeaconsDiscovered(BeaconRegion beaconRegion, List<Beacon> beacons) {
+                System.out.println("log "+beaconSize);
+                for (Beacon beacon: beacons) {
+                    System.out.println("log - "+beacon.getMacAddress());
+
+                }
                 if (!status) {
                     return;
                 }
                 if (!beacons.isEmpty()) {
                     if (beacons.size() < beaconSize) {
-                        Log.d("AttendenceCheck", "less than 3 beacons");
+                       // Log.d("AttendenceCheck", "less than 3 beacons");
                         return;
                     }
                     // beacon 정렬
-                    for (Beacon beacon: beacons) {
+                    for (Beacon beacon: beacons)
+                        {
+
                         arrangeBeacon(beacon);
                     }
 
@@ -97,6 +115,16 @@ public class BeaconScanActivity extends AppCompatActivity {
                 }
             }
         }));
+
+    }
+
+    private void sendBenchToServer() {
+        RetrofitClient retrofitClient = new RetrofitClient();
+        retrofitClient.init2();
+        System.out.println("send bench : "+id+setname+mdate+stime+etime);
+        benchDTO bDTO = new benchDTO(id,setname,mdate,stime,etime);
+
+        retrofitClient.sendBench(bDTO);
 
     }
 

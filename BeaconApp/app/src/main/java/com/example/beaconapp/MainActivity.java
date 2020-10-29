@@ -84,15 +84,14 @@ public class MainActivity extends AppCompatActivity {
         idText = findViewById(R.id.edit_id_text);
         timeText = findViewById(R.id.edit_m_time_text);
         xText = findViewById(R.id.edit_x_text);
-        yText = findViewById(R.id.edit_y_text);
         id = idText.getText().toString();
         Mtime = timeText.getText().toString();
         real_x = xText.getText().toString();
-        real_y = yText.getText().toString();
         info.setId(id);
         info.setReal_x(real_x);
         info.setReal_y(real_y);
         info.setTime(Mtime);
+        info.setName=real_x;
     }
 
     @Override

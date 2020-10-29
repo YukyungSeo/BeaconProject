@@ -7,6 +7,11 @@ public class Info {
     private String real_x;
     private String real_y;
 
+    public String sTime;
+    public String eTime;
+    public String mDate;
+    public String setName;
+
     private Info(){}
 
     public String getTime() {
