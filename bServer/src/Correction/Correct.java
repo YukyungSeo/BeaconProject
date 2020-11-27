@@ -1,7 +1,6 @@
 package Correction;
 
 import java.util.ArrayList;
-import pack.MakeSpline;
 
 public class Correct {
     int sizeX;
@@ -9,18 +8,16 @@ public class Correct {
     double LengthX;
     double LengthY;
     double ErrorRange;
-    MakeSpline sp;
     DBConnector dbConnector;
     ArrayList<Phone> List;
 
-    public Correct(int sizeX, int sizeY, double lengthX, double lengthY, ArrayList<Phone> list,MakeSpline ms) {
+    public Correct(int sizeX, int sizeY, double lengthX, double lengthY, ArrayList<Phone> list) {
         this.sizeX = sizeX;
         this.sizeY = sizeY;
         this.LengthX = lengthX;
         this.LengthY = lengthY;
         this.ErrorRange = this.LengthX / this.sizeX;
         this.List = list;
-        this.sp=ms;
         this.dbConnector = new DBConnector();
     }
 
@@ -45,20 +42,22 @@ public class Correct {
             int otherPhoneY = otherPhone.getY();
             double rssiDistance = getDistance(phone, otherPhone);
 
-            double gridDistance = Math.sqrt((Math.pow((phoneX - otherPhoneX) * (LengthX / sizeX), 2)
-                    + Math.pow((phoneY - otherPhoneY) * (LengthY / sizeY), 2)));
+            if(rssiDistance >= 0) {
+                double gridDistance = Math.sqrt((Math.pow((phoneX - otherPhoneX) * (LengthX / sizeX), 2)
+                        + Math.pow((phoneY - otherPhoneY) * (LengthY / sizeY), 2)));
 
-            if (gridDistance - ErrorRange < rssiDistance && rssiDistance < gridDistance + ErrorRange) {
-                correctcount++;
+                if (gridDistance - ErrorRange < rssiDistance && rssiDistance < gridDistance + ErrorRange) {
+                    correctcount++;
+                }
             }
         }
-        if (correctcount > List.size() / 2) {
+        if (correctcount >= List.size() / 2) {
             return true;
         }
         return false;
     }
 
     public double getDistance(Phone phoneSender, Phone phoneReceiver) throws ClassNotFoundException {
-        return dbConnector.connectANDquery(phoneSender.getID(), phoneReceiver.getID());
+        return dbConnector.getDistance(phoneSender.getID(), phoneReceiver.getID());
     }
 }
